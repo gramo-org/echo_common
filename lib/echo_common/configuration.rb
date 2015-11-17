@@ -6,8 +6,22 @@ module EchoCommon
   # Access application configuration. The public read interface is
   # equal to hash; it uses object[key] to read.
   #
-  # Example:
-  #   Echo.config[:some_key] # Reads from given env, may provide a casted value and a default
+  # You can inherit the Configuration class and override returned values
+  # by defining methods equal to key name.
+  #
+  # class MyConfig < EchoCommon::Configuration
+  #   private
+  #
+  #   # Returns bcrypt cost as integer, defaults to 10
+  #   def bcrypt_cost
+  #     fetch(:bcrypt_cost, 10).to_i
+  #   end
+  # end
+  #
+  # Example of usage:
+  #
+  #   config = EchoCommon::Configuration.new ENV  # or any hash like object
+  #   config[:some_key]
   #
   class Configuration
     # Error raised if we are asked to #get a key which does not exist.

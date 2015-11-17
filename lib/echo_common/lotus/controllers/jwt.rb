@@ -4,6 +4,11 @@ require 'echo_common/services/jwt'
 module EchoCommon
   module Lotus
     module Controllers
+      #
+      # Provides a #jwt method on controllers.
+      #
+      # @see EchoCommon::Lotus::Controllers::Authentication
+      #
       module Jwt
         class JwtError < EchoCommon::Error; end
 
