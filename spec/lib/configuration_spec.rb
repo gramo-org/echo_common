@@ -1,4 +1,5 @@
 require 'spec_helper'
+require "echo_common/configuration"
 
 describe "Echo configuration" do
   let(:env) do

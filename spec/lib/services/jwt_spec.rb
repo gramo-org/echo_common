@@ -1,5 +1,6 @@
 # encoding utf-8
 require 'spec_helper'
+require "echo_common/services/jwt"
 
 describe EchoCommon::Services::Jwt do
   let(:config) do
@@ -24,7 +25,7 @@ describe EchoCommon::Services::Jwt do
     data = { 'foo' => 'bar', 'name' => 'Thorbjørn' }
 
     token = described_class.encode data, config: config
-    
+
     expect {
       JWT.decode token, 'bogus', config[:jwt_alg]
     }.to raise_error(JWT::VerificationError)
