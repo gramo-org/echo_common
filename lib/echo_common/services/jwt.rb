@@ -3,6 +3,14 @@ require 'jwt'
 module EchoCommon
   module Services
     class Jwt
+      def self.default_config
+        @@echo_config
+      end
+
+      def self.default_config=(config)
+        @@echo_config = config
+      end
+
       def self.from_http_header(header)
         token = header.sub(/Bearer /, '')
         decode token
@@ -11,14 +19,14 @@ module EchoCommon
       # Encode a payload as JWT
       # @param payload [Object] the object to be encoded in the token
       # @return [String] a JWT encoded string
-      def self.encode(payload, config: Echo.config)
+      def self.encode(payload, config: default_config)
         JWT.encode payload, config[:jwt_key], config[:jwt_alg]
       end
 
       # Decode the given JWT String using the configured algorithm
       # @param jwt_string [String] the JWT to decode
       # @return [Echo::Services::Jwt::Token]
-      def self.decode(jwt_string, config: Echo.config)
+      def self.decode(jwt_string, config: default_config)
         decoded = JWT.decode jwt_string, config[:jwt_key_pub], algorithm: config[:jwt_alg]
 
         Token.new decoded
