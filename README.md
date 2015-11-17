@@ -2,6 +2,8 @@
 
 Common code used by different part of Echo.
 
+[![Build Status](https://snap-ci.com/gramo-org/echo_common/branch/master/build_image)](https://snap-ci.com/gramo-org/echo_common/branch/master)
+
 ## Installation
 
 Add this line to your application's Gemfile:
