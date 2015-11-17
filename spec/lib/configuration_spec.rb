@@ -10,8 +10,16 @@ describe "Echo configuration" do
     }
   end
 
+  class TestConfig < EchoCommon::Configuration
+    private
+
+    def session_timeout_minutes
+      fetch(:session_timeout_minutes, 60).to_i
+    end
+  end
+
   subject do
-    EchoCommon::Configuration.new env
+    TestConfig.new env
   end
 
   describe "getting configuration" do
@@ -38,7 +46,7 @@ describe "Echo configuration" do
     end
 
     it "can provide defaults not included in given env" do
-      config = EchoCommon::Configuration.new(env: {})
+      config = TestConfig.new(env: {})
 
       expect(config[:session_timeout_minutes]).to eq 60
     end

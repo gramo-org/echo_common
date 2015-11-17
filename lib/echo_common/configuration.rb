@@ -49,46 +49,20 @@ module EchoCommon
 
     private
 
-    def session_timeout_minutes
-      fetch(:session_timeout_minutes) { 60 }.to_i
-    end
-
-    def bcrypt_cost
-      fetch(:bcrypt_cost) { 10 }.to_i
-    end
-
-    def database_url
-      if fetch(:snap_ci) { false }
-        fetch :snap_db_pg_url
-      else
-        fetch :echo_database_url
-      end
-    end
-
-    def force_ssl
-      fetch(:force_ssl) { '' } == 'true'
-    end
-
-    def smtp
-      {
-        address: fetch('smtp_host'),
-        port: fetch('smtp_port'),
-        authentication: :plain,
-        user_name: fetch('smtp_user'),
-        password: fetch('smtp_pass'),
-        domain: 'gramo.no',
-        enable_starttls_auto: true
-      }
-    end
-
-    def log_level
-      fetch(:log_level).upcase
-    end
-
-
-    def fetch(key, &block)
+    # Fetches given key
+    #
+    # If no data for given key is found a default value may be provided, or a block,
+    # just like Hash#fetch.
+    #
+    # nil isn't used as default value, as it would result in @env.fetch(key, nil) default to nil.
+    def fetch(key, default = :no_value_was_provided_to_the_fetch_method, &block)
       key = key.to_s.upcase
-      @env.fetch key, &block
+
+      if default == :no_value_was_provided_to_the_fetch_method
+        @env.fetch key, &block
+      else
+        @env.fetch key, default
+      end
     rescue ::KeyError => error
       raise Configuration::KeyError, "'#{key}' was not found."
     end
