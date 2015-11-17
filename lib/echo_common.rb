@@ -1,5 +1,5 @@
 require "echo_common/version"
 
+require "echo_common/services/jwt"
 module EchoCommon
-  # Your code goes here...
 end
