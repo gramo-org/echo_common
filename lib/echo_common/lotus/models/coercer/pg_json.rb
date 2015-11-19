@@ -10,7 +10,7 @@ module EchoCommon
       module Coercer
         class PGJSON < ::Lotus::Model::Coercer
           def self.load(value)
-            ::Sequel.pg_json value
+            value
           end
 
           def self.dump(value)
