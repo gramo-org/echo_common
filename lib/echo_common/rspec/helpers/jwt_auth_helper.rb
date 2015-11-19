@@ -1,4 +1,5 @@
 require 'echo_common/services/jwt'
+require 'securerandom'
 
 module EchoCommon
   module RSpec

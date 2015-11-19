@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'echo_common/lotus/controllers/authentication'
+require 'securerandom'
 
 describe EchoCommon::Lotus::Controllers::Authentication do
   class AuthenticationControllerTest
