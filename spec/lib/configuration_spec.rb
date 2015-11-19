@@ -22,6 +22,27 @@ describe "Echo configuration" do
     TestConfig.new env
   end
 
+  describe "#logger" do
+    it "returns a logger" do
+      expect(subject.logger).to be_a Logger
+    end
+
+    it "has log level set when initialized the config" do
+      config = TestConfig.new({'LOG_LEVEL' => 'WARN'})
+      expect(config.logger.level).to eq Logger::WARN
+    end
+
+    it "has log level set when getting a logger" do
+      config = TestConfig.new({'LOG_LEVEL' => 'INFO'})
+      expect(config.logger(level: 'WARN').level).to eq Logger::WARN
+    end
+
+    it "raises error if log level is not configured correctly" do
+      config = TestConfig.new({'LOG_LEVEL' => 'FOO'})
+      expect { config.logger }.to raise_error EchoCommon::Configuration::LogLevelNameError
+    end
+  end
+
   describe "getting configuration" do
     it "reads given a symbol" do
       expect(subject[:max_threads]).to eq "8"

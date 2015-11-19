@@ -1,4 +1,5 @@
 require 'echo_common/error'
+require 'lotus/logger'
 
 module EchoCommon
   # Echo Configuration
@@ -27,6 +28,9 @@ module EchoCommon
     # Error raised if we are asked to #get a key which does not exist.
     class KeyError < EchoCommon::Error; end
 
+    # Error raised when log leves is badly configured
+    class LogLevelNameError < ::EchoCommon::Error; end
+
     def initialize(env)
       @env = env
     end
@@ -45,9 +49,28 @@ module EchoCommon
       end
     end
 
+    # Returns a new Logger, with given tag and level.
+    #
+    #   tag     -  The tag name you want logged lines to be tagged with
+    #   level   -  The log level for this logger, defaults to this config
+    def logger(tag: nil, level: self[:log_level])
+      ::Lotus::Logger.new(tag).tap do |logger|
+        logger.level = ::Logger.const_get level
+      end
+    rescue NameError
+      raise LogLevelNameError,
+        "Log level '#{self[:log_level]}' does not exist. " +
+        "Please ensure config 'LOG_LEVEL' is set correctly."
+    end
+
+
 
 
     private
+
+    def log_level
+      fetch(:log_level, 'INFO').upcase
+    end
 
     # Fetches given key
     #
