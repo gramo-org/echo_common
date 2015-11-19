@@ -1,4 +1,5 @@
 require 'echo_common/error'
+require 'echo_common/logger/formatter'
 require 'lotus/logger'
 
 module EchoCommon
@@ -56,10 +57,8 @@ module EchoCommon
     def logger(tag: nil, level: self[:log_level])
       ::Lotus::Logger.new(tag).tap do |logger|
         logger.level = ::Logger.const_get level
-        request_id = Thread.current[:echo_request_id]
-        if !!request_id
-          logger.progname = "[request_id=#{request_id}]"
-        end
+        logger.formatter = EchoCommon::Logger::Formatter.new
+        logger.formatter.application_name = logger.application_name
       end
     rescue NameError
       raise LogLevelNameError,
