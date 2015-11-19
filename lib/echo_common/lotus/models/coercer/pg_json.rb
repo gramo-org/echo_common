@@ -1,6 +1,3 @@
-fail "Requires ::Lotus::Model" unless defined?(::Lotus::Model)
-fail "Requires ::Sequel" unless defined?(::Sequel)
-
 require 'lotus/model/coercer'
 require 'sequel'
 
