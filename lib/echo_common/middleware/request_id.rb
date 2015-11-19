@@ -16,6 +16,8 @@ module EchoCommon
       def call(env)
         Thread.current[:echo_request_id] = env.fetch('HTTP_HEROKU_REQUEST_ID', SecureRandom.uuid)
         @app.call(env)
+      ensure
+        Thread.current[:echo_request_id] = nil
       end
     end
   end
