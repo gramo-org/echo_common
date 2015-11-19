@@ -1,7 +1,5 @@
 require 'database_cleaner'
-
-DatabaseCleaner.clean_with :truncation
-DatabaseCleaner.strategy = :transaction
+require 'echo_common/rspec/helpers/db_clean_helper'
 
 unless defined? ::Lotus::Container
   fail EchoCommon::Error, "Didn't find Lotus::Container"
@@ -18,21 +16,7 @@ module EchoCommon
         def self.included(base)
           base.class_eval do
             include Rack::Test::Methods
-
-            let(:disable_db_clean) { false }
-
-            before do
-              unless disable_db_clean
-                DatabaseCleaner.start
-              end
-            end
-
-            after do
-              unless disable_db_clean
-                DatabaseCleaner.clean
-              end
-            end
-
+            include EchoCommon::RSpec::Helpers::DbCleanHelper
 
             let :app do
               ::Lotus::Container.new
