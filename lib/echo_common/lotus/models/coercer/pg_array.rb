@@ -9,12 +9,12 @@ module EchoCommon
     module Models
       module Coercer
         class PGArray < ::Lotus::Model::Coercer
-          def self.dump(value)
-            ::Sequel.pg_array value, :varchar
-          end
-
           def self.load(value)
             ::Kernel.Array value unless value.nil?
+          end
+
+          def self.dump(value)
+            ::Sequel.pg_array value, :varchar
           end
         end
       end

@@ -10,7 +10,11 @@ module EchoCommon
       module Coercer
         class PGJSON < ::Lotus::Model::Coercer
           def self.load(value)
-            value
+            if value.is_a? String
+              ::JSON.load value
+            else
+              value
+            end
           end
 
           def self.dump(value)
