@@ -41,6 +41,34 @@ describe "Echo configuration" do
       config = TestConfig.new({'LOG_LEVEL' => 'FOO'})
       expect { config.logger }.to raise_error EchoCommon::Configuration::LogLevelNameError
     end
+
+    it "logs with app name" do
+      output = stub_stdout_constant do
+        subject.logger(tag: "test").info("test logger")
+      end
+
+      expect(output).to match /INFO -- \[test\] : test logger/
+
+      output = stub_stdout_constant do
+        subject.logger(tag: "echo").info("test logger, take two!")
+      end
+
+      expect(output).to match /INFO -- \[echo\] : test logger, take two!/
+    end
+
+    it "logs request_id set on thread" do
+      output = stub_stdout_constant do
+        logger = subject.logger tag: "test"
+
+        Thread.current[:echo_request_id] = "1234"
+
+        logger.info("test logger")
+      end
+
+      expect(output).to match /INFO -- \[test\] \[request_id=1234\] : test logger/
+
+      Thread.current[:echo_request_id] = nil
+    end
   end
 
   describe "getting configuration" do
