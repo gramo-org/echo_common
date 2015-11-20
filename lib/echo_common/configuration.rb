@@ -1,5 +1,5 @@
 require 'echo_common/error'
-require 'lotus/logger'
+require 'echo_common/logger'
 
 module EchoCommon
   # Echo Configuration
@@ -54,12 +54,8 @@ module EchoCommon
     #   tag     -  The tag name you want logged lines to be tagged with
     #   level   -  The log level for this logger, defaults to this config
     def logger(tag: nil, level: self[:log_level])
-      ::Lotus::Logger.new(tag).tap do |logger|
+      Logger.new(tag).tap do |logger|
         logger.level = ::Logger.const_get level
-        request_id = Thread.current[:echo_request_id]
-        if !!request_id
-          logger.progname = "[request_id=#{request_id}]"
-        end
       end
     rescue NameError
       raise LogLevelNameError,
