@@ -40,11 +40,7 @@ module EchoCommon
       alias :<< :push
 
       def to_a
-        if full?
-          @buffer.clone
-        else
-          @buffer.slice(0, @i)
-        end
+        full? ? @buffer.clone : @buffer.slice(0, @i)
       end
 
       private
