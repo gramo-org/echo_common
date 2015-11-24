@@ -32,5 +32,18 @@ module EchoCommon
         expect(subject.time_series :foo).to eq [6, 2, 3, 4, 5]
       end
     end
+
+    describe "#dump" do
+
+      it do
+        expect(subject.dump).to eq({counters: {}, time_series: {}})
+      end
+
+      it do
+        subject.increment(:foo)
+        subject.add_to_time_series(:foo, 1)
+        expect(subject.dump).to eq({counters: { foo: 1}, time_series: {foo: [1]}})
+      end
+    end
   end
 end

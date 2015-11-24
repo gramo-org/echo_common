@@ -18,6 +18,13 @@ module EchoCommon
       @time_series[series] << value
     end
 
+    def dump
+      {
+        counters:    @counters.clone,
+        time_series: @time_series.merge(@time_series){|k,v|v.to_a},
+      }
+    end
+
     def counter(name); @counters[name.to_sym]; end
     def time_series(name); @time_series[name.to_sym].to_a; end
 
