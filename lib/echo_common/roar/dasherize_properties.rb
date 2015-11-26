@@ -6,7 +6,7 @@ module EchoCommon
     # Module to be prepended to a Roar Representers to ensure all keys
     # are dasherized.
     module DasherizeProperties
-      def to_hash
+      def to_hash(*args)
         HashWithDasherizeSupport.new(super).dasherize!
       end
 
