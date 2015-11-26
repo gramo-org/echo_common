@@ -5,11 +5,7 @@ describe EchoCommon::Roar::DasherizeProperties do
   class TestRoarDecorator
     prepend EchoCommon::Roar::DasherizeProperties
 
-    attr_reader :received_args
-
-    def to_hash(*args)
-      @received_args = args
-
+    def to_hash
       {
         "playtime list" => 1,
         "foo_bar" => 2,
@@ -33,12 +29,5 @@ describe EchoCommon::Roar::DasherizeProperties do
         }
       }
     )
-  end
-
-  it "receives some arguments" do
-    decorator = TestRoarDecorator.new
-    expect {
-      decorator.to_hash(1, 2)
-    }.to change(decorator, :received_args).to [1, 2]
   end
 end
