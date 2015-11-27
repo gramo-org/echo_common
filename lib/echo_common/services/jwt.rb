@@ -19,6 +19,26 @@ module EchoCommon
         decode token
       end
 
+      # Creates JWT token to be used as session object.
+      #
+      # Arguments
+      #   user          - A user object, responding to #to_hash which returns the attributes to
+      #                   be serialized.
+      #   exp           - Expiration time
+      #   config        - A configuration object where jwt_alg, jwt_key and jwt_key_pub are found.
+      def self.create_session_token(user:, exp:, config: default_config)
+        encode(
+          {
+            data: {
+              authenticated: true,
+              user: user.to_hash
+            },
+            exp: exp
+          },
+        config: config
+        )
+      end
+
       # Encode a payload as JWT
       #
       # @param payload [Object] the object to be encoded in the token
@@ -52,6 +72,11 @@ module EchoCommon
           @payload = decoded[0].to_h
           @header = decoded[1].to_h
         end
+
+        def to_hash
+          @payload
+        end
+        alias to_h to_hash
 
         def [](key)
           @payload.fetch(key)

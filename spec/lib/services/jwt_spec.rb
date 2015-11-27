@@ -11,6 +11,31 @@ describe EchoCommon::Services::Jwt do
     }
   end
 
+  describe ".create_session_token" do
+    let(:user) do
+      {
+        id: "1"
+      }
+    end
+
+    let(:exp) { Time.now.to_i + 60 * 5 }
+
+    it "creates expected token" do
+      token = described_class.create_session_token(user: user, exp: exp, config: config)
+      decoded = described_class.decode token, config: config
+
+      expect(decoded.to_h).to eq(
+        "data" => {
+          "authenticated" => true,
+          "user" => {
+            "id" => "1"
+          }
+        },
+        "exp" => exp
+      )
+    end
+  end
+
   it "creates signed token, which is decodeable" do
     data = { 'foo' => 'bar', 'name' => 'Thorbjørn' }
 
