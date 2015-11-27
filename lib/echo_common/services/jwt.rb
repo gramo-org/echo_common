@@ -1,3 +1,4 @@
+require 'lotus/utils/hash'
 require 'jwt'
 
 module EchoCommon
@@ -25,18 +26,31 @@ module EchoCommon
       #   user          - A user object, responding to #to_hash which returns the attributes to
       #                   be serialized.
       #   exp           - Expiration time
+      #   data          - The data hash, contains user by default, user and other data will be put here
+      #                   to make it collision safe with JWT reserved claims. Data you provide will
+      #                   be merged with user.
+      #   claims        - Place reserved claims here. Exp will be put here. Data you provide will
+      #                   be merged with exp.
       #   config        - A configuration object where jwt_alg, jwt_key and jwt_key_pub are found.
-      def self.create_session_token(user:, exp:, config: default_config)
-        encode(
-          {
-            data: {
-              authenticated: true,
-              user: user.to_hash
-            },
-            exp: exp
-          },
-        config: config
-        )
+      def self.create_session_token(user:, exp: nil, data: {}, claims: {}, config: default_config)
+        data = ::Lotus::Utils::Hash.new(data).symbolize!
+
+        exp ||= payload[:exp]
+        fail ArgumentError, "Missing exp" if exp.nil?
+
+        data_defaults = {
+          authenticated: true,
+          user: user.to_hash
+        }
+
+        claims_defaults = {
+          exp: exp
+        }
+
+        payload = claims_defaults.merge(claims)
+        payload[:data] = data_defaults.merge(data)
+
+        encode payload, config: config
       end
 
       # Encode a payload as JWT

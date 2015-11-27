@@ -34,6 +34,24 @@ describe EchoCommon::Services::Jwt do
         "exp" => exp
       )
     end
+
+    it "creates token with extra data" do
+      token = described_class.create_session_token(
+        data: {some: "data"}, user: user, exp: exp, config: config
+      )
+      decoded = described_class.decode token, config: config
+
+      expect(decoded.to_h).to eq(
+        "data" => {
+          "some" => "data",
+          "authenticated" => true,
+          "user" => {
+            "id" => "1"
+          }
+        },
+        "exp" => exp
+      )
+    end
   end
 
   it "creates signed token, which is decodeable" do
