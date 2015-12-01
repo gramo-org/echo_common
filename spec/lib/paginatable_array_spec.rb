@@ -15,5 +15,9 @@ module EchoCommon
       expect(subject.offset).to eq offset
       expect(subject.total).to eq total
     end
+
+    it "returns self when called to_a" do
+      expect(subject.to_a.object_id).to eq subject.object_id
+    end
   end
 end

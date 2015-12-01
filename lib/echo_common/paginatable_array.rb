@@ -7,7 +7,7 @@ module EchoCommon
   #
   # In other words: Take inspiration from example:
   # https://github.com/amatsuda/kaminari/blob/master/lib/kaminari/models/array_extension.rb
-  # 
+  #
   class PaginatableArray < Array
     attr_reader :limit, :offset, :total
 
@@ -18,5 +18,10 @@ module EchoCommon
 
       super array
     end
+
+    def to_a
+      self
+    end
+    alias to_ary to_a
   end
 end
