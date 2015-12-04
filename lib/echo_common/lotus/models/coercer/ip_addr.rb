@@ -7,11 +7,12 @@ module EchoCommon
       module Coercer
         class IPAddr < ::Lotus::Model::Coercer
           def self.load(value)
-            ::IPAddr.new value
+            ::IPAddr.new value unless value.nil?
           end
 
           def self.dump(value)
-            value.to_s
+            value = value.to_s
+            value.length > 0 ? value : nil
           end
         end
       end
