@@ -39,12 +39,23 @@ module EchoCommon
 
         def post_json(url, body = {}, rack_env = auth_header)
           rack_env["CONTENT_TYPE"] = "application/json"
-          post url, body.to_json, rack_env
+          post url, _to_json_unless_already_string(body), rack_env
         end
 
         def put_json(url, body = {}, rack_env = auth_header)
           rack_env["CONTENT_TYPE"] = "application/json"
-          put url, body.to_json, rack_env
+          put url, _to_json_unless_already_string(body), rack_env
+        end
+
+
+        private
+
+        def _to_json_unless_already_string(body)
+          if body.is_a? String
+            body
+          else
+            body.to_json
+          end
         end
       end
 
