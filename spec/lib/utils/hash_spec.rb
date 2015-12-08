@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'echo_common/utils/hash'
+require 'lotus/utils/hash'
 
 module EchoCommon
   module Utils
@@ -46,6 +47,52 @@ module EchoCommon
             "MY_HASH" => {"OTHER-LITTLE" => "value"},
             "MY_ARRAY" => [{"HAS" => "data"}]
           )
+        end
+      end
+
+      describe "#symbolize!" do
+        let(:hash) do
+          {
+            "l" => ::Lotus::Utils::Hash.new({
+              "lotus_key" => "value"
+            }),
+            "c" => ::EchoCommon::Utils::Hash.new({
+              "echo_key" => "value"
+            }),
+            "h" => {"hash" => "value"}
+          }
+        end
+
+        it "returns transformed object as expected" do
+          transformed = described_class.new hash
+          transformed.symbolize!
+
+          expect(transformed[:l][:lotus_key]).to eq "value"
+          expect(transformed[:c][:echo_key]).to eq "value"
+          expect(transformed[:h][:hash]).to eq "value"
+        end
+      end
+
+      describe "#stringify!" do
+        let(:hash) do
+          {
+            l: ::Lotus::Utils::Hash.new({
+              "lotus_key" => "value"
+            }),
+            c: ::EchoCommon::Utils::Hash.new({
+              "echo_key" => "value"
+            }),
+            h: {"hash" => "value"}
+          }
+        end
+
+        it "returns transformed object as expected" do
+          transformed = described_class.new hash
+          transformed.stringify!
+
+          expect(transformed['l']['lotus_key']).to eq "value"
+          expect(transformed['c']['echo_key']).to eq "value"
+          expect(transformed['h']['hash']).to eq "value"
         end
       end
     end
