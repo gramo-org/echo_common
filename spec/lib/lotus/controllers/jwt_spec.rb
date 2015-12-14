@@ -29,7 +29,10 @@ describe EchoCommon::Lotus::Controllers::Jwt do
 
   subject do
     JwtControllerTest.new.tap do |controller|
-      controller.params = double(env: {})
+      controller.params = double(
+        'env' => {},
+        '[]' => nil
+      )
     end
   end
 
@@ -43,6 +46,14 @@ describe EchoCommon::Lotus::Controllers::Jwt do
     payload = { 'data' => { 'foo' => 'bar' } }
     token = subject.encode_as_jwt payload
     subject.params.env.merge!('HTTP_AUTHORIZATION' => "Bearer #{token}")
+    expect(subject.jwt.to_h).to eq payload
+  end
+
+  it "exposes jwt payload from query param" do
+    payload = { 'data' => { 'foo' => 'bar' } }
+    token = subject.encode_as_jwt payload
+
+    expect(subject.params).to receive('[]').with('token').and_return token
     expect(subject.jwt.to_h).to eq payload
   end
 

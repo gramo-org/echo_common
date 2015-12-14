@@ -6,8 +6,8 @@ module EchoCommon
     module Helpers
       module JwtAuthHelper
         # Returns the HTTP header which can be used for an authorized dummy user.
-        def auth_header(payload = nil)
-          if !payload
+        def auth_token(payload = nil)
+          if payload.nil?
             test_user = {
               id: SecureRandom.uuid,
               name: 'Herp Derp',
@@ -17,9 +17,11 @@ module EchoCommon
             payload = {data: {authenticated: true, user: test_user}}
           end
 
-          token = EchoCommon::Services::Jwt.encode payload
+          EchoCommon::Services::Jwt.encode payload
+        end
 
-          Hash['HTTP_AUTHORIZATION' => "Bearer #{token}"]
+        def auth_header(payload = nil)
+          Hash['HTTP_AUTHORIZATION' => "Bearer #{auth_token(payload)}"]
         end
       end
     end
