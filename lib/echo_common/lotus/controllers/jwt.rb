@@ -15,13 +15,11 @@ module EchoCommon
         def jwt
           @jwt ||= begin
             token = nil
-            header = params.env['HTTP_AUTHORIZATION']
-            token_from_get_param = params['token']
-
-            jwt = if header
+            
+            jwt = if header = params.env['HTTP_AUTHORIZATION']
               EchoCommon::Services::Jwt.from_http_header header
-            elsif token_from_get_param
-              EchoCommon::Services::Jwt.decode token_from_get_param
+            elsif token = params.raw.get('token')
+              EchoCommon::Services::Jwt.decode token
             end
 
             halt 401, "Signature has expired" if jwt.nil?
