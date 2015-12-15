@@ -10,18 +10,24 @@ module EchoCommon::Utils
       property(:created_at) { |v| Time.parse v }
       property(:fallback, default: {})
       property(:no_value)
+      property(:symbol_key)
     end
 
     subject do
       TestValueObject.new(
         "number" => "123",
-        "created_at" => "2015-06-01 02:00:00 +0200"
+        "created_at" => "2015-06-01 02:00:00 +0200",
+        :symbol_key => "works-too!"
       )
     end
 
     it "has expected read methods" do
       expect(subject.number).to eq "123"
       expect(subject.created_at).to eq Time.parse "2015-06-01 02:00:00 +0200"
+    end
+
+    it "reads keys in hash which are symbols" do
+      expect(subject.symbol_key).to eq "works-too!"
     end
 
     it "has a default value for fallback" do
@@ -35,7 +41,8 @@ module EchoCommon::Utils
     it "is equal to another object, with same values" do
       other = TestValueObject.new(
         "number" => "123",
-        "created_at" => "2015-06-01 02:00:00 +0200"
+        "created_at" => "2015-06-01 02:00:00 +0200",
+        :symbol_key => "works-too!"
       )
 
       expect(subject).to eq other
