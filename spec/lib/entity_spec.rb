@@ -18,6 +18,10 @@ module EchoCommon
           it "has a attribute called #{attr}" do
             expect(subject.send attr).to eq attr
           end
+
+          it "includes #{attr} in inspect" do
+            expect(subject.inspect).to include "@#{attr}=\"#{attr}\""
+          end
         end
 
         it "raises exception when trying to update an attribute" do
