@@ -8,7 +8,9 @@ module EchoCommon
 
 
   class Entity
-    include Lotus::Entity
+    def self.inherited(subclass)
+      subclass.include ::Lotus::Entity
+    end
 
     def self.create_only_attributes(*attrs)
       attrs.each do |attr|
