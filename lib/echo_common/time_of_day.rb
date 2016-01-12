@@ -71,6 +71,11 @@ module EchoCommon
       self.class.from_second_of_day [second_of_day - seconds, 0].max
     end
 
+    def next
+      self + 1
+    end
+    alias succ next
+
 
     def to_s
       [

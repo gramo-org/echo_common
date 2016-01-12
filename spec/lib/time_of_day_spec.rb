@@ -118,5 +118,13 @@ module EchoCommon
         ]
       end
     end
+
+    describe "usage in range" do
+      it "is determined to be included in a range" do
+        expect(described_class.new(0)..described_class.new(2)).to include described_class.new(1)
+        expect(described_class.new(1)..described_class.new(1, 1)).to include described_class.new(1, 0, 1)
+        expect(described_class.new(1)..described_class.new(1, 1)).to_not include described_class.new(1, 1, 1)
+      end
+    end
   end
 end
