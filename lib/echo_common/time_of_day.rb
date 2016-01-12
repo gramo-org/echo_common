@@ -10,6 +10,9 @@ module EchoCommon
     SEC_PER_HOUR = (SEC_PER_MINUTE * 60).freeze
     SEC_PER_DAY = ((SEC_PER_HOUR * 24) - 1).freeze
 
+    # Loads from string, separated by ':'
+    #
+    # Ex. "10:01:12"
     def self.load(string)
       return if string.nil?
 
@@ -17,6 +20,7 @@ module EchoCommon
       new *parts
     end
 
+    # Creates from Ruby's Time or DateTime object
     def self.from_time(time)
       case time
       when Time, DateTime
@@ -26,6 +30,9 @@ module EchoCommon
       end
     end
 
+    # Creates from seconds
+    #
+    # Ex. from_second_of_day(3600) => TimeOfDay.new(1, 0, 0)
     def self.from_second_of_day(seconds)
       fail ArgumentError, "Given more seconds than in one day" if seconds > SEC_PER_DAY
 
@@ -35,6 +42,7 @@ module EchoCommon
       new hour, minute, seconds
     end
 
+    # Dumps a time_of_day to string
     def self.dump(time_of_day)
       return if time_of_day.nil?
 
@@ -56,21 +64,32 @@ module EchoCommon
       freeze
     end
 
-
+    # Second of day this object represents
+    #
+    # Ex. new(1, 0, 1).second_of_day => 3601
     def second_of_day
-      (hour * 60 * 60) +
-      (minute * 60) +
+      (hour * SEC_PER_HOUR) +
+      (minute * SEC_PER_MINUTE) +
       second
     end
 
+    # Adds seconds from this time
+    #
+    # Returns a new object.
     def +(seconds)
       self.class.from_second_of_day [second_of_day + seconds, SEC_PER_DAY].min
     end
 
+    # Subtracts seconds to this time
+    #
+    # Returns a new object.
     def -(seconds)
       self.class.from_second_of_day [second_of_day - seconds, 0].max
     end
 
+    # Gives the next succ to this time
+    #
+    # Adds 1 second.
     def next
       self + 1
     end

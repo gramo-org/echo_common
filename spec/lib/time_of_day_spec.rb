@@ -90,7 +90,7 @@ module EchoCommon
         expect(subject + 100000000).to eq described_class.new(23, 59, 59)
       end
 
-      it "substracts no more than down to 0" do
+      it "subtracts no more than down to 0" do
         expect(subject - 100000000).to eq described_class.new(0, 0, 0)
       end
     end
