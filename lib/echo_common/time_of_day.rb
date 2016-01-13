@@ -3,6 +3,8 @@ module EchoCommon
   #
   # In other words a class representing time without date, nor time zone.
   class TimeOfDay
+    include Comparable
+
     VALID_HOUR = 0..23.freeze
     VALID_MIN_SEC = 0..59.freeze
 

@@ -128,6 +128,20 @@ module EchoCommon
           t1, t2, t3, t4
         ]
       end
+
+      it "can be compared with >" do
+        t1 = described_class.new 1
+        t2 = described_class.new 2
+
+        expect(t1 < t2).to eq true
+      end
+
+      it "can be compared with <" do
+        t1 = described_class.new 1
+        t2 = described_class.new 2
+
+        expect(t1 > t2).to eq false
+      end
     end
 
     describe "usage in range" do
