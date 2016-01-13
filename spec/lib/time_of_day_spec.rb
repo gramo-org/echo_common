@@ -9,6 +9,10 @@ module EchoCommon
         expect(described_class.load("03:04:55")).to eq described_class.new(3, 4, 55)
       end
 
+      it "loads a TimeOfDay" do
+        expect(described_class.load(described_class.new(10, 1, 2))).to eq described_class.new(10, 1, 2)
+      end
+
       it "loads nil" do
         expect(described_class.load(nil)).to eq nil
       end

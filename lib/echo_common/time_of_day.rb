@@ -13,11 +13,20 @@ module EchoCommon
     # Loads from string, separated by ':'
     #
     # Ex. "10:01:12"
-    def self.load(string)
-      return if string.nil?
+    def self.load(object)
+      return if object.nil?
 
-      parts = string.split(':').map &:to_i
-      new *parts
+      case object
+      when TimeOfDay
+        object
+      when Time, DateTime
+        from_time object
+      when String
+        parts = object.split(':').map &:to_i
+        new *parts
+      else
+        fail ArgumentError, "Unable to load #{object}."
+      end
     end
 
     # Creates from Ruby's Time or DateTime object
