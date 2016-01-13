@@ -22,8 +22,13 @@ module EchoCommon
       when Time, DateTime
         from_time object
       when String
-        parts = object.split(':').map &:to_i
-        new *parts
+        parts = object.split(':')
+
+        if parts.length < 1 || parts.length > 3 || parts.any? { |part| ! part.match /\A\d{1,2}\Z/ }
+          fail ArgumentError, "Invalid string given. Must be like HH:MM:SS. MM and SS is optional."
+        end
+
+        new *parts.map(&:to_i)
       else
         fail ArgumentError, "Unable to load #{object}."
       end

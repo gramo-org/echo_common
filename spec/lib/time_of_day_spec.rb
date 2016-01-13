@@ -9,6 +9,13 @@ module EchoCommon
         expect(described_class.load("03:04:55")).to eq described_class.new(3, 4, 55)
       end
 
+      it "fails on invalid string" do
+        expect { described_class.load("a03:00:00") }.to raise_error ArgumentError
+        expect { described_class.load("03:00:00:01") }.to raise_error ArgumentError
+        expect { described_class.load("3.45") }.to raise_error ArgumentError
+        expect { described_class.load("03;") }.to raise_error ArgumentError
+      end
+
       it "loads a TimeOfDay" do
         expect(described_class.load(described_class.new(10, 1, 2))).to eq described_class.new(10, 1, 2)
       end
