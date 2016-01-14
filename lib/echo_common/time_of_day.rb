@@ -26,7 +26,7 @@ module EchoCommon
       when String
         parts = object.split(':')
 
-        if parts.length < 1 || parts.length > 3 || parts.any? { |part| ! part.match /\A\d{1,2}\Z/ }
+        if parts.length < 1 || parts.length > 3 || parts.any? { |part| !part.match /\A\d{1,2}\Z/ }
           fail ArgumentError, "Invalid string given. Must be like HH:MM:SS. MM and SS is optional."
         end
 
