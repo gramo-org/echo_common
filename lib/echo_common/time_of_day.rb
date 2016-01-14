@@ -126,17 +126,15 @@ module EchoCommon
 
 
     def <=>(other)
-      if other.respond_to? :second_of_day
-        second_of_day <=> other.second_of_day
-      end
+      second_of_day <=> other.second_of_day
+    rescue NoMethodError => error
+      fail ArgumentError, "comparison of #{other.class} with #{inspect} failed"
     end
 
     def equal?(other)
-      if other.respond_to? :second_of_day
-        second_of_day == other.second_of_day
-      else
-        false
-      end
+      second_of_day == other.second_of_day
+    rescue NoMethodError => error
+      false
     end
     alias eql? equal?
     alias == equal?

@@ -115,6 +115,10 @@ module EchoCommon
         expect(subject).to eq other
         expect(subject.hash).to eq other.hash
       end
+
+      it "is not equal object of other type" do
+        expect(subject == "foo").to eq false
+      end
     end
 
     describe "comparable" do
@@ -141,6 +145,12 @@ module EchoCommon
         t2 = described_class.new 2
 
         expect(t1 > t2).to eq false
+      end
+
+      it "fails if you incomparable objects" do
+        expect {
+          subject < "foo"
+        }.to raise_error ArgumentError
       end
     end
 
