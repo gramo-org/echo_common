@@ -11,6 +11,9 @@ module EchoCommon
         p minsk
         p oslo
         p "-----"
+        p minsk.localtime
+        p oslo.localtime
+        p "-----"
         p minsk.utc
         p oslo.utc
         p "--------------"
