@@ -6,18 +6,6 @@ module EchoCommon
       it "date.to_time creates time in correct time zone" do
         minsk = TimeZone.in_time_zone("Europe/Minsk") { Date.new(2015, 1, 15).to_time }
         oslo = TimeZone.in_time_zone("Europe/Oslo") { Date.new(2015, 1, 15).to_time }
-
-        p "--------------"
-        p minsk
-        p oslo
-        p "-----"
-        p minsk.localtime
-        p oslo.localtime
-        p "-----"
-        p minsk.utc
-        p oslo.utc
-        p "--------------"
-
         expect(minsk.utc + (60*60*2)).to eq oslo.utc
       end
 
