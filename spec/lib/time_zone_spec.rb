@@ -15,6 +15,13 @@ module EchoCommon
 
         expect(minsk.utc + (60*60*2)).to eq oslo.utc
       end
+
+      it "leaves ENV['TZ'] as it was" do
+        env_tz = ENV['TZ']
+        minsk = TimeZone.in_time_zone("Europe/Minsk") { Time.parse("2015-01-15 00:00:00") }
+
+        expect(ENV['TZ']).to eq env_tz
+      end
     end
   end
 end
