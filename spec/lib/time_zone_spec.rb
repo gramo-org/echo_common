@@ -7,6 +7,14 @@ module EchoCommon
         minsk = TimeZone.in_time_zone("europe/minsk") { Date.new(2015, 1, 15).to_time }
         oslo = TimeZone.in_time_zone("europe/oslo") { Date.new(2015, 1, 15).to_time }
 
+        p "--------------"
+        p minsk
+        p oslo
+        p "-----"
+        p minsk.utc
+        p oslo.utc
+        p "--------------"
+
         expect(minsk.utc + (60*60*2)).to eq oslo.utc
       end
 
