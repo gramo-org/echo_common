@@ -47,6 +47,16 @@ module EchoCommon
           put url, _to_json_unless_already_string(body), rack_env
         end
 
+        def patch_json(url, body = {}, rack_env = auth_header)
+          rack_env["CONTENT_TYPE"] = "application/json"
+          patch url, _to_json_unless_already_string(body), rack_env
+        end
+
+        def delete_json(url, query = {}, rack_env = auth_header)
+          rack_env["CONTENT_TYPE"] = "application/json"
+          delete url, query, rack_env
+        end
+
 
         private
 
