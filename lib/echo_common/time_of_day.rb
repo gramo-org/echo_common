@@ -103,6 +103,17 @@ module EchoCommon
       self.class.from_second_of_day [second_of_day - seconds, 0].max
     end
 
+    # Changes given attribute(s)
+    #
+    # Returns a new object.
+    def change(hour: nil, minute: nil, second: nil)
+      self.class.new(
+        hour    || self.hour,
+        minute  || self.minute,
+        second  || self.second,
+      )
+    end
+
     # Gives the next succ to this time
     #
     # Adds 1 second.

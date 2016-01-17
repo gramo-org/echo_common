@@ -104,6 +104,11 @@ module EchoCommon
       it "subtracts no more than down to 0" do
         expect(subject - 100000000).to eq described_class.new(0, 0, 0)
       end
+
+      it "is changeable" do
+        changed = subject.change(second: 59)
+        expect(changed).to eq described_class.new(subject.hour, subject.minute, 59)
+      end
     end
 
     describe "equality" do
