@@ -91,6 +91,16 @@ module EchoCommon
       end
     end
 
+    describe "#strftime (#to_s)" do
+      it "returns hour, minute and second" do
+        expect(subject.strftime).to eq "13:02:15"
+      end
+
+      it "returns on format we ask for" do
+        expect(subject.strftime "%H.%M").to eq "13.02"
+      end
+    end
+
     describe "calculations" do
       it "adds seconds" do
         expect(subject + 10).to eq described_class.new(13, 2, 25)
@@ -110,6 +120,7 @@ module EchoCommon
         expect(changed).to eq described_class.new(subject.hour, subject.minute, 59)
       end
     end
+
 
     describe "equality" do
       it "is considered equal when second_of_day is the same" do

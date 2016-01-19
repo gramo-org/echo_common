@@ -122,14 +122,20 @@ module EchoCommon
     end
     alias succ next
 
+    def strftime(template = "%H:%M:%S")
+      values = {
+        hour:   "%02d" % hour,
+        minute: "%02d" % minute,
+        second: "%02d" % second
+      }
 
-    def to_s
-      [
-        "%02d" % hour,
-        "%02d" % minute,
-        "%02d" % second
-      ].join(':')
+      template.gsub!("%H", "%{hour}")
+      template.gsub!("%M", "%{minute}")
+      template.gsub!("%S", "%{second}")
+
+      template % values
     end
+    alias to_s strftime
 
     def inspect
       "<#{self.class.name} #{to_s}>"
