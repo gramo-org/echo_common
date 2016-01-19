@@ -98,6 +98,7 @@ module EchoCommon
 
       it "returns on format we ask for" do
         expect(subject.strftime "%H.%M").to eq "13.02"
+        expect(subject.strftime "%H %M".freeze).to eq "13 02"
       end
     end
 

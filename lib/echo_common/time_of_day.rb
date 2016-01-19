@@ -122,7 +122,9 @@ module EchoCommon
     end
     alias succ next
 
-    def strftime(template = "%H:%M:%S")
+    def strftime(format = "%H:%M:%S")
+      template = format.dup
+      
       values = {
         hour:   "%02d" % hour,
         minute: "%02d" % minute,
