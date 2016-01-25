@@ -1,11 +1,11 @@
 require 'ipaddr'
-require 'lotus/model/coercer'
+require 'hanami/model/coercer'
 
 module EchoCommon
-  module Lotus
+  module Hanami
     module Models
       module Coercer
-        class IPAddr < ::Lotus::Model::Coercer
+        class IPAddr < ::Hanami::Model::Coercer
           def self.load(value)
             ::IPAddr.new value unless value.nil?
           end

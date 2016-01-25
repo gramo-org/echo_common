@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'echo_common/lotus/models/coercer/ip_addr'
+require 'echo_common/hanami/models/coercer/ip_addr'
 
-describe EchoCommon::Lotus::Models::Coercer::IPAddr do
+describe EchoCommon::Hanami::Models::Coercer::IPAddr do
   let(:ip) { "127.0.0.1" }
 
   describe ".load" do

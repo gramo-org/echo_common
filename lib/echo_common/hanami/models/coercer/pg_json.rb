@@ -1,11 +1,11 @@
-require 'lotus/model/coercer'
+require 'hanami/model/coercer'
 require 'sequel'
 
 module EchoCommon
-  module Lotus
+  module Hanami
     module Models
       module Coercer
-        class PGJSON < ::Lotus::Model::Coercer
+        class PGJSON < ::Hanami::Model::Coercer
           def self.load(value)
             if value.is_a? String
               ::JSON.load value

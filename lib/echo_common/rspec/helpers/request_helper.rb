@@ -1,8 +1,8 @@
 require 'database_cleaner'
 require 'echo_common/rspec/helpers/db_clean_helper'
 
-unless defined? ::Lotus::Container
-  fail EchoCommon::Error, "Didn't find Lotus::Container"
+unless defined? ::Hanami::Container
+  fail EchoCommon::Error, "Didn't find Hanami::Container"
 end
 
 module EchoCommon
@@ -19,7 +19,7 @@ module EchoCommon
             include EchoCommon::RSpec::Helpers::DbCleanHelper
 
             let :app do
-              ::Lotus::Container.new
+              ::Hanami::Container.new
             end
           end
         end

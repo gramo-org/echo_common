@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'echo_common/lotus/models/coercer/pg_json'
+require 'echo_common/hanami/models/coercer/pg_json'
 
-describe EchoCommon::Lotus::Models::Coercer::PGJSON do
+describe EchoCommon::Hanami::Models::Coercer::PGJSON do
   describe ".load" do
     it "loads an object" do
       object = {foo: 'bar'}

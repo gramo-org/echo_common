@@ -1,8 +1,8 @@
-require 'lotus/logger'
+require 'hanami/logger'
 
 module EchoCommon
   module Logger
-    class Formatter < ::Lotus::Logger::Formatter
+    class Formatter < ::Hanami::Logger::Formatter
       def call(severity, time, progname, msg)
         request_id = Thread.current[:echo_request_id]
 

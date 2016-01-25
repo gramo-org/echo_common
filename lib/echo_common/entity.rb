@@ -1,6 +1,6 @@
 require 'echo_common'
 require 'echo_common/error'
-require 'lotus-model'
+require 'hanami-model'
 
 module EchoCommon
 
@@ -9,7 +9,7 @@ module EchoCommon
 
   class Entity
     def self.inherited(subclass)
-      subclass.include ::Lotus::Entity
+      subclass.include ::Hanami::Entity
     end
 
     def self.create_only_attributes(*attrs)

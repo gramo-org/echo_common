@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'echo_common/lotus/controllers/jwt'
+require 'echo_common/hanami/controllers/jwt'
 
-describe EchoCommon::Lotus::Controllers::Jwt do
+describe EchoCommon::Hanami::Controllers::Jwt do
   let(:config) do
     {
       jwt_alg: 'HS256',
@@ -11,7 +11,7 @@ describe EchoCommon::Lotus::Controllers::Jwt do
   end
 
   class JwtControllerTest
-    include EchoCommon::Lotus::Controllers::Jwt
+    include EchoCommon::Hanami::Controllers::Jwt
 
     def self.handle_exception(*args)
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'echo_common/utils/hash'
-require 'lotus/utils/hash'
+require 'hanami/utils/hash'
 
 module EchoCommon
   module Utils
@@ -18,8 +18,8 @@ module EchoCommon
 
 
 
-      it "is a subclass of lotus hash" do
-        expect(described_class.new).to be_a ::Lotus::Utils::Hash
+      it "is a subclass of hanami hash" do
+        expect(described_class.new).to be_a ::Hanami::Utils::Hash
       end
 
 
@@ -53,8 +53,8 @@ module EchoCommon
       describe "#symbolize!" do
         let(:hash) do
           {
-            "l" => ::Lotus::Utils::Hash.new({
-              "lotus_key" => "value"
+            "l" => ::Hanami::Utils::Hash.new({
+              "hanami_key" => "value"
             }),
             "c" => ::EchoCommon::Utils::Hash.new({
               "echo_key" => "value"
@@ -67,7 +67,7 @@ module EchoCommon
           transformed = described_class.new hash
           transformed.symbolize!
 
-          expect(transformed[:l][:lotus_key]).to eq "value"
+          expect(transformed[:l][:hanami_key]).to eq "value"
           expect(transformed[:c][:echo_key]).to eq "value"
           expect(transformed[:h][:hash]).to eq "value"
         end
@@ -76,8 +76,8 @@ module EchoCommon
       describe "#stringify!" do
         let(:hash) do
           {
-            l: ::Lotus::Utils::Hash.new({
-              "lotus_key" => "value"
+            l: ::Hanami::Utils::Hash.new({
+              "hanami_key" => "value"
             }),
             c: ::EchoCommon::Utils::Hash.new({
               "echo_key" => "value"
@@ -90,7 +90,7 @@ module EchoCommon
           transformed = described_class.new hash
           transformed.stringify!
 
-          expect(transformed['l']['lotus_key']).to eq "value"
+          expect(transformed['l']['hanami_key']).to eq "value"
           expect(transformed['c']['echo_key']).to eq "value"
           expect(transformed['h']['hash']).to eq "value"
         end

@@ -1,6 +1,6 @@
 require 'echo_common/error'
 require 'echo_common/logger/formatter'
-require 'lotus/logger'
+require 'hanami/logger'
 
 module EchoCommon
   # Echo Configuration
@@ -55,7 +55,7 @@ module EchoCommon
     #   tag     -  The tag name you want logged lines to be tagged with
     #   level   -  The log level for this logger, defaults to this config
     def logger(tag: nil, level: self[:log_level])
-      ::Lotus::Logger.new(tag).tap do |logger|
+      ::Hanami::Logger.new(tag).tap do |logger|
         logger.level = ::Logger.const_get level
         logger.formatter = EchoCommon::Logger::Formatter.new
         logger.formatter.application_name = logger.application_name

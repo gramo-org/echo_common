@@ -2,12 +2,12 @@ require 'echo_common/error'
 require 'echo_common/services/jwt'
 
 module EchoCommon
-  module Lotus
+  module Hanami
     module Controllers
       #
       # Provides a #jwt method on controllers.
       #
-      # @see EchoCommon::Lotus::Controllers::Authentication
+      # @see EchoCommon::Hanami::Controllers::Authentication
       #
       module Jwt
         class JwtError < EchoCommon::Error; end

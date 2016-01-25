@@ -1,17 +1,17 @@
 require 'echo_common/error'
 
-unless defined? ::Lotus::Mailer
-  fail EchoCommon::Error, "Didn't find Lotus::Mailer"
+unless defined? ::Hanami::Mailer
+  fail EchoCommon::Error, "Didn't find Hanami::Mailer"
 end
 
 module EchoCommon
   module RSpec
     module Helpers
-      module LotusMailHelper
+      module HanamiMailHelper
         def self.included(base)
           base.class_eval do
             after do
-              ::Lotus::Mailer.deliveries.clear
+              ::Hanami::Mailer.deliveries.clear
             end
           end
         end

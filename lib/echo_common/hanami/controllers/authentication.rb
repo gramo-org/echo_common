@@ -1,14 +1,14 @@
 module EchoCommon
-  module Lotus
+  module Hanami
     module Controllers
       #
-      # Provides authentication for a Lotus controller.
+      # Provides authentication for a Hanami controller.
       #
       # Needs #jwt to provide with a JSON Token object.
       #
       # Can be included directly, or used in controller.prepare statement.
       #
-      #   class App < Lotus::Application
+      #   class App < Hanami::Application
       #     configure do
       #       controller.prepare do
       #         include Authentication
@@ -16,8 +16,8 @@ module EchoCommon
       #     end
       #   end
       #
-      # @see EchoCommon::Lotus::Controllers::SkipAuthentication
-      # @see EchoCommon::Lotus::Controllers::Jwt
+      # @see EchoCommon::Hanami::Controllers::SkipAuthentication
+      # @see EchoCommon::Hanami::Controllers::Jwt
       # @see EchoCommon::Services::Jwt
       # @see EchoCommon::Services::Jwt::Token
       #

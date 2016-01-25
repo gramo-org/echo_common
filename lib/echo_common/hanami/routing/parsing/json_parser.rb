@@ -1,7 +1,7 @@
 require 'echo_common/error'
 
 module EchoCommon
-  module Lotus
+  module Hanami
     module Routing
       module Parsing
         #
@@ -16,9 +16,9 @@ module EchoCommon
           class BodyParseError < ::JSON::ParserError; end
 
           def mime_types
-            # After v0.4.3 of lotus router this is no longer an issue.
-            if defined? Lotus::Router
-              unless Lotus::Router::VERSION == "0.4.3"
+            # After v0.4.3 of hanami router this is no longer an issue.
+            if defined? Hanami::Router
+              unless Hanami::Router::VERSION == "0.4.3"
                 fail EchoCommon::Error,
                   "Please verify that we still need this patch, adding support for application/vnd.api+json #{__FILE__}."
               end

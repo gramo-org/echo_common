@@ -1,13 +1,13 @@
 require 'spec_helper'
-require 'echo_common/lotus/controllers/authentication'
+require 'echo_common/hanami/controllers/authentication'
 require 'securerandom'
 
-describe EchoCommon::Lotus::Controllers::Authentication do
+describe EchoCommon::Hanami::Controllers::Authentication do
   class AuthenticationControllerTest
     def self.before(args)
     end
 
-    include EchoCommon::Lotus::Controllers::Authentication
+    include EchoCommon::Hanami::Controllers::Authentication
 
     attr_accessor :jwt
   end
