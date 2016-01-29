@@ -36,6 +36,13 @@ module EchoCommon
       end
     end
 
+    # Checks if given object seems to be a valid object we can .load()
+    def self.valid?(object)
+      !!load(object)
+    rescue ArgumentError
+      false
+    end
+
     # Creates from Ruby's Time or DateTime object
     def self.from_time(time)
       case time
@@ -124,7 +131,7 @@ module EchoCommon
 
     def strftime(format = "%H:%M:%S")
       template = format.dup
-      
+
       values = {
         hour:   "%02d" % hour,
         minute: "%02d" % minute,

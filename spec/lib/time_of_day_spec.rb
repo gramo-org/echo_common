@@ -2,6 +2,18 @@ require 'echo_common/time_of_day'
 
 module EchoCommon
   describe TimeOfDay do
+    describe ".valid?" do
+      it "is true when load succeeds" do
+        expect(described_class).to receive(:load).and_return :ok
+        expect(described_class.valid?("20:00")).to eq true
+      end
+
+      it "is false when load fails" do
+        expect(described_class).to receive(:load).and_raise ArgumentError
+        expect(described_class.valid?("foo")).to eq false
+      end
+    end
+
     describe ".load" do
       it "loads expected values" do
         expect(described_class.load("10:01:02")).to eq described_class.new(10, 1, 2)
