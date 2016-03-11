@@ -1,5 +1,6 @@
 require 'hanami/model/coercer'
 require 'sequel'
+require 'sequel/extensions/pg_array'
 
 module EchoCommon
   module Hanami
