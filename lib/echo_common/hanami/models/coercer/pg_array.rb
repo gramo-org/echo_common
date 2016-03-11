@@ -5,7 +5,7 @@ module EchoCommon
   module Hanami
     module Models
       module Coercer
-        class PGArray < Hanami::Model::Coercer
+        class PGArray < ::Hanami::Model::Coercer
           def self.dump(value)
             ::Sequel.pg_array(value) rescue nil
           end
