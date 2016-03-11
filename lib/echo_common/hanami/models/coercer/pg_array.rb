@@ -6,20 +6,23 @@ module EchoCommon
   module Hanami
     module Models
       module Coercer
-        class PGArray
+        class PGArray < ::Hanami::Model::Coercer
+          @@type = nil
+
           def self.for(type)
-            new type
+            PGArray.const_get("#{type.to_s.capitalize}")
+          rescue
+            PGArray.const_set(
+              "#{type.to_s.capitalize}",
+              Class.new(PGArray) { @@type = type }
+            )
           end
 
-          def initialize(type = nil)
-            @type = type
+          def self.dump(value)
+            ::Sequel.pg_array(value, @@type) rescue nil
           end
 
-          def dump(value)
-            ::Sequel.pg_array(value, @type) rescue nil
-          end
-
-          def load(value)
+          def self.load(value)
             ::Kernel.Array(value) unless value.nil?
           end
         end
