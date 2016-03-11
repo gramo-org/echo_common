@@ -9,6 +9,20 @@ module EchoCommon
         class PGArray < ::Hanami::Model::Coercer
           @@type = nil
 
+
+          # Returns a type specific subclass of PGArray.
+          # If the class is already defined returns it, otherwise
+          # creates a new dynamic class for the given type.
+          # The type is communicated to ::Sequel.pg_array
+          #
+          # Example:
+          #
+          # ::EchoCommon::Hanami::Models::Coercer::PGArray.for(:varchar)
+          # => EchoCommon::Hanami::Models::Coercer::PGArray::Varchar
+          #
+          # ::EchoCommon::Hanami::Models::Coercer::PGArray.for(:integer)
+          # => EchoCommon::Hanami::Models::Coercer::PGArray::Integer
+          #
           def self.for(type)
             PGArray.const_get("#{type.to_s.capitalize}")
           rescue
