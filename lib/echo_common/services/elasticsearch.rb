@@ -36,11 +36,23 @@ module EchoCommon
 
           def self.new_client
             #{Client}.new(
-              logger: Echo.config.logger(tag: "elasticsearch"),
-              config: Echo.config[:elasticsearch]
+              logger: config.logger(tag: "elasticsearch"),
+              config: config[:elasticsearch]
             )
           end
         DOC
+      end
+
+      # deletes all indices.
+      # does not require index and type to be configured on the service
+      def self.delete_all_indices
+        new.delete_all_indices
+      end
+
+      # creates all indices.
+      # does not require index and type to be configured on the service
+      def self.create_all_indices
+        new.create_all_indices
       end
     end
   end
