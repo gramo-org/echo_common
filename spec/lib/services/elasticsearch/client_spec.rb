@@ -117,7 +117,8 @@ describe EchoCommon::Services::Elasticsearch::Client do
   describe "#delete_index" do
     it "deletes index using prefix" do
       expect(elasticsearch_client.indices).to receive(:delete).with(
-        index: "testing_foo"
+        index: "testing_foo",
+        ignore: [404]
       )
 
       client.delete_index("foo")
