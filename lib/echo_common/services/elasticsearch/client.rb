@@ -7,7 +7,7 @@ module EchoCommon
       class Client
 
         # Initializes a new wrapper client (@see ::Elasticsearch::Client)
-        # 
+        #
         # logger - the logger to configure on the underlying ::Elasticsearch::Client
         #
         # config - the elasticsearch configuration parameters.
@@ -73,7 +73,7 @@ module EchoCommon
         end
 
         def delete_index(index)
-          @client.indices.delete index: with_prefix(index)
+          @client.indices.delete index: with_prefix(index), ignore: [404]
         end
 
         def delete_all_indices
