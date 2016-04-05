@@ -143,4 +143,16 @@ describe EchoCommon::Services::Elasticsearch::Client do
     end
   end
 
+  describe "#put_alias" do
+    it "refresh_indices" do
+      expect(elasticsearch_client.indices).to receive(:put_alias).with(
+        index: "testing_foo",
+        name: "testing_bar",
+        body: {baz: "biz"}
+      )
+
+      client.put_alias(index: "foo", name: "bar", body: {baz: "biz"})
+    end
+  end
+
 end
