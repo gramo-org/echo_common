@@ -54,7 +54,7 @@ module EchoCommon
           )
         end
 
-        def search(index:, type:, body:)
+        def search(index:, type: nil, body:)
           response = @client.search(
             index: with_prefix(index), type: type,
             body: body
