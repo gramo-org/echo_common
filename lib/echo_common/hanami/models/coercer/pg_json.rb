@@ -15,7 +15,15 @@ module EchoCommon
           end
 
           def self.dump(value)
-            ::JSON.dump value.to_h
+            value = case
+                    when value.respond_to?(:to_ary)
+                      value.to_ary
+                    when value.respond_to?(:to_h)
+                      value.to_h
+                    else
+                      raise ArgumentError.new "Argument 'value' needs to be an Array or to be convertible to an Hash with #to_h"
+                    end
+            ::JSON.dump value
           end
         end
       end
