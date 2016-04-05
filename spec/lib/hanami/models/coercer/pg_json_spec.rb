@@ -14,6 +14,11 @@ describe EchoCommon::Hanami::Models::Coercer::PGJSON do
   end
 
   describe ".dump" do
+    it "dumps an array" do
+      array = [1,2,3]
+      expect(described_class.dump(array)).to eq '[1,2,3]'
+    end
+
     it "dumps an object" do
       object = {foo: 'bar'}
       expect(described_class.dump(object)).to eq '{"foo":"bar"}'
