@@ -14,10 +14,10 @@ module EchoCommon
         index: nil,
         type: nil,
         client: self.class.client,
-        query_index: nil
+        query_alias: nil
       )
         @index = index
-        @query_index = query_index || index
+        @query_index = query_alias || index
         @type = type
         @client = client
       end
