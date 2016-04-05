@@ -20,7 +20,7 @@ module EchoCommon
           end
 
           def put_alias(index:, name:, body: {})
-            @client.indices.put_alias index: index, name: name, body: body
+            @client.put_alias index: index, name: name, body: body
           end
         end
       end

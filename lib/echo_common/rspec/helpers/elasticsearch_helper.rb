@@ -83,14 +83,22 @@ module EchoCommon
                 begin
                   TestCluster.start
                   BlockingProxyClient.route = true
-                  EchoCommon::Services::Elasticsearch.create_all_indices
+                  setup_indices
                   example.run
                 ensure
-                  EchoCommon::Services::Elasticsearch.delete_all_indices
+                  teardown_indices
                   BlockingProxyClient.route = false
                 end
               end
             end
+          end
+
+          def setup_indices
+            EchoCommon::Services::Elasticsearch.create_all_indices
+          end
+
+          def teardown_indices
+            EchoCommon::Services::Elasticsearch.delete_all_indices
           end
 
           class TestCluster

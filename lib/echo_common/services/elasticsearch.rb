@@ -54,6 +54,12 @@ module EchoCommon
       def self.create_all_indices
         new.create_all_indices
       end
+
+      # calls instance method put_alias.
+      # does not require index and type to be configured on the service
+      def self.put_alias(*args)
+        new.put_alias(*args)
+      end
     end
   end
 end
