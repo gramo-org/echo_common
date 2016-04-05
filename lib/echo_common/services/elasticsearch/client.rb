@@ -80,8 +80,18 @@ module EchoCommon
           @client.indices.delete index: with_prefix("*")
         end
 
+        # @see ::Elasticsearch::API::Indices::Actions.refresh
         def refresh_indices
           @client.indices.refresh
+        end
+
+        # @see ::Elasticsearch::API::Indices::Actions.put_alias
+        def put_alias(index:, name:, body: {})
+          @client.indices.put_alias(
+            index: with_prefix(index),
+            name: with_prefix(name),
+            body: body
+          )
         end
 
         private
