@@ -21,7 +21,7 @@ module EchoCommon
               #  }
               def search(query_body)
                 @client.search(
-                  index: @index, type: @type,
+                  index: @query_index,
                   body: query_body
                 )
               end

@@ -13,9 +13,11 @@ module EchoCommon
       def initialize(
         index: nil,
         type: nil,
-        client: self.class.client
+        client: self.class.client,
+        query_alias: nil
       )
         @index = index
+        @query_index = query_alias || index
         @type = type
         @client = client
       end
