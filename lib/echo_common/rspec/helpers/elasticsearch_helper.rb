@@ -56,7 +56,7 @@ module EchoCommon
             end
 
             result = @target.send(method, *args, &block)
-            if [:index, :update].include? method
+            if [:index, :update, :delete, :bulk].include? method
               force_refresh_indices
             end
             result
