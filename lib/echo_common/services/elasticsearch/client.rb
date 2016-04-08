@@ -47,6 +47,13 @@ module EchoCommon
           )
         end
 
+        def delete(index:, type:, id:)
+          symbolize @client.delete(
+            index: with_prefix(index), type: type,
+            id: id
+          )
+        end
+
         def bulk(index:, type:, body:)
           symbolize @client.bulk(
             index: with_prefix(index), type: type,

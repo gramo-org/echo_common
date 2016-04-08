@@ -62,6 +62,18 @@ describe EchoCommon::Services::Elasticsearch::Client do
     end
   end
 
+  describe "#delete" do
+    it "deletes doc using prefixed index" do
+      expect(elasticsearch_client).to receive(:delete).with(
+        index: "testing_foo",
+        type: "bar",
+        id: "baz"
+      )
+
+      client.delete(index: "foo", type: "bar", id: "baz")
+    end
+  end
+
   describe "#bulk" do
     it "calls bulk using prefixed index" do
       expect(elasticsearch_client).to receive(:bulk).with(

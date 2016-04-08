@@ -59,6 +59,14 @@ module EchoCommon
             )
           end
 
+          # Wraps elasticsearch client 'delete' method and returns the result
+          def delete(id)
+            @client.delete(
+              index: @index, type: @type,
+              id: id
+            )
+          end
+
           # Wraps elasticsearch client 'bulk' method and returns the result
           def bulk(data)
             @client.bulk(
