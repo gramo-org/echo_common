@@ -148,10 +148,16 @@ describe EchoCommon::Services::Elasticsearch::Client do
   end
 
   describe "#refresh_indices" do
-    it "refresh_indices" do
-      expect(elasticsearch_client.indices).to receive(:refresh)
+    it "asks client to refresh all indices" do
+      expect(elasticsearch_client.indices).to receive(:refresh).with(index: "testing_*")
 
       client.refresh_indices
+    end
+
+    it "asks client to refresh an index" do
+      expect(elasticsearch_client.indices).to receive(:refresh).with(index: "testing_foo")
+
+      client.refresh_indices "foo"
     end
   end
 

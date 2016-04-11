@@ -12,11 +12,15 @@ module EchoCommon
           end
 
           def delete_index
-            @client.delete_index(@index)
+            @client.delete_index @index
+          end
+
+          def refresh_index
+            @client.refresh_indices @index
           end
 
           def create_index
-            @client.create_index(@index)
+            @client.create_index @index
           end
 
           def put_alias(index:, name:, body: {})

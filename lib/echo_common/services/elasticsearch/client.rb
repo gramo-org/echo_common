@@ -88,8 +88,8 @@ module EchoCommon
         end
 
         # @see ::Elasticsearch::API::Indices::Actions.refresh
-        def refresh_indices
-          @client.indices.refresh
+        def refresh_indices(index = "*")
+          @client.indices.refresh index: with_prefix(index)
         end
 
         # @see ::Elasticsearch::API::Indices::Actions.put_alias
