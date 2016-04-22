@@ -4,20 +4,22 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
   let(:config) do
     {
-      host: "127.0.0.1",
-      port: 9200,
-      user: "",
-      password: "",
-      scheme: "http",
+      indices_mapping_glob: "foo/bar/*.json",
       index_prefix: "testing_",
-      indices_mapping_glob: "foo/bar/*.json"
+      hosts: [{
+        host: "127.0.0.1",
+        port: 9200,
+        user: "",
+        password: "",
+        scheme: "http",
+      }]
     }
   end
 
   let(:client_class) { double }
   let(:elasticsearch_client) { double indices: double }
   let(:client) do
-    described_class.new logger: double, config: config, client_class: client_class
+    described_class.new **config, client_class: client_class
   end
 
   before do
