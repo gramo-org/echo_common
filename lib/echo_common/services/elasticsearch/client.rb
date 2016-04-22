@@ -15,21 +15,23 @@ module EchoCommon
         #          as well as some custom parameters used by our implementation.
         #
         #          Ex:
-        #          {
-        #            host: "127.0.0.1",
-        #            port: 9200,
-        #            user: "admin",
-        #            password: "admin",
-        #            scheme: "https",
-        #            index_prefix: "staging_", # <- custom property defining the index prefix
-        #            buffer_max_size: 1000, # <- custom property defining tha max size of the (@see AutoFlushingBuffer)
-        #            indices_mapping_glob: "lib/config/indices/*.json" # <- custom property defining the glob to use to get mapping files
-        #          }
+        #           {
+        #             index_prefix: "staging_",                    # <- custom property defining the index prefix
+        #             indices_mapping_glob: "path/indices/*.json"  # <- custom property defining the glob to use to get mapping files
+        #             hosts: [{
+        #               host: "127.0.0.1",
+        #               port: 9200,
+        #               user: "admin",
+        #               password: "admin",
+        #               scheme: "https",
+        #             }]
+        #           }
         #
-        def initialize(logger:, config:, client_class: ::Elasticsearch::Client)
-          @config = config
-          @indices_mapping_glob = @config.fetch(:indices_mapping_glob)
-          @client = client_class.new(logger: logger, hosts: [@config])
+        def initialize(client_class: ::Elasticsearch::Client, **config)
+          @indices_mapping_glob = config.delete(:indices_mapping_glob)
+          @index_prefix         = config.delete(:index_prefix)
+
+          @client = client_class.new config
         end
 
         def get(index:, type:, id:)
@@ -104,16 +106,20 @@ module EchoCommon
         private
 
         def with_prefix(index)
-          "#{@config[:index_prefix]}#{index}"
+          "#{@index_prefix}#{index}"
         end
 
         def mapping_files
-          Dir.glob(@indices_mapping_glob)
+          Dir.glob(indices_mapping_glob)
         end
 
         def mapping_file_name(prefixed_index)
-          unprefixed_index = prefixed_index.sub(@config[:index_prefix], '')
-          @indices_mapping_glob.sub('*', unprefixed_index)
+          unprefixed_index = prefixed_index.sub(@index_prefix, '')
+          indices_mapping_glob.sub('*', unprefixed_index)
+        end
+
+        def indices_mapping_glob
+          @indices_mapping_glob || fail("You must set indices_mapping_glob when initialize the client.")
         end
 
         def create_index_from_file(file_name)
