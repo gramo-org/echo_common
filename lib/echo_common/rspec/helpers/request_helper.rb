@@ -1,3 +1,4 @@
+require 'rack/test'
 require 'database_cleaner'
 require 'echo_common/rspec/helpers/db_clean_helper'
 
