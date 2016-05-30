@@ -8,9 +8,7 @@ module EchoCommon
 
 
   class Entity
-    def self.inherited(subclass)
-      subclass.include ::Hanami::Entity
-    end
+    include ::Hanami::Entity
 
     def self.create_only_attributes(*attrs)
       attrs.each do |attr|
