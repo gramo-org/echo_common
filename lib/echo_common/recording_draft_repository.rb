@@ -2,12 +2,12 @@ module EchoCommon
   class RecordingDraftRepository
 
     class << self
-      def elasticsearc_service_class
-        ::EchoCommon::Services::Elasticsearch
+      def elasticsearch_service_class
+        raise "Implement in subclass!"
       end
 
       def service
-        @service ||= elasticsearc_service_class.new(
+        @service ||= elasticsearch_service_class.new(
           index: 'recording_drafts',
           type: 'recording_draft'
         )
