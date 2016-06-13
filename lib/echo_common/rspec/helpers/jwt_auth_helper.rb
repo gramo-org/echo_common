@@ -5,16 +5,19 @@ module EchoCommon
   module RSpec
     module Helpers
       module JwtAuthHelper
+
+        def current_user_data
+          {
+            id: SecureRandom.uuid,
+            name: 'Herp Derp',
+            email: 'herpderp@skalar.no'
+          }
+        end
+
         # Returns the HTTP header which can be used for an authorized dummy user.
         def auth_token(payload = nil)
           if payload.nil?
-            test_user = {
-              id: SecureRandom.uuid,
-              name: 'Herp Derp',
-              email: 'herpderp@skalar.no'
-            }
-
-            payload = {data: {authenticated: true, user: test_user}}
+            payload = {data: {authenticated: true, user: current_user_data}}
           end
 
           EchoCommon::Services::Jwt.encode payload

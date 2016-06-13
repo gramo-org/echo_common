@@ -1,3 +1,5 @@
+require_relative 'recording_draft'
+
 module EchoCommon
   class RecordingDraftRepository
 
@@ -21,7 +23,7 @@ module EchoCommon
 
       def find(id)
         result = service.get id
-        ElasticsearchRecordingDraft.new result
+        RecordingDraft.new result
       end
 
       def count
