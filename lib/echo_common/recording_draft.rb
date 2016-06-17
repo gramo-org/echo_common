@@ -5,6 +5,7 @@ module EchoCommon
     attributes :recording_date, :release_date, :performer_note, :label_name
 
     attributes :local_ids, :main_artists
+    attributes :composers
     attributes :alternative_isrcs, :alternative_titles
     attributes :tracks
 
@@ -15,6 +16,7 @@ module EchoCommon
       self.alternative_isrcs ||= []
       self.alternative_titles ||= []
       self.tracks ||= []
+      self.composers ||= []
     end
   end
 end
