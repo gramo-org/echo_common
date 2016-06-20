@@ -15,11 +15,20 @@ module EchoCommon
     end
 
     it "can add objects" do
-      obj = double
+      obj = "obj"
       subject << obj
 
       expect(subject).to_not be_empty
       expect(subject).to eq [obj]
+    end
+
+    it "raises error when adding duplicates" do
+      obj = "obj"
+      subject << obj
+
+      expect {
+        subject << obj
+      }.to raise_error Entity::Relation::Many::AlreadyAddedError
     end
   end
 end

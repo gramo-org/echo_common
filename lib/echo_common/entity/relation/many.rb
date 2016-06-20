@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'echo_common/error'
 
 module EchoCommon
   class Entity
@@ -15,16 +16,40 @@ module EchoCommon
         extend Forwardable
 
         def_delegators :@collection,
-          :<<, :delete,
+          :delete,
           :each, :each_with_index, :map,
           :length, :first, :last, :[],
           :any?, :empty?, :include?,
           :==, :equal?, :eql?, :eq?, :hash
 
+
+        class AlreadyAddedError < EchoCommon::Error
+          attr_reader :object, :relation
+
+          def initialize(object, relation)
+            @object = object
+            @relation = relation
+
+            super "#{object} already added to #{relation}."
+          end
+        end
+
         def initialize(owner, collection = [])
           @owner = owner
           @collection = collection
         end
+
+        def push(object)
+          raise AlreadyAddedError.new(object, self) if @collection.include? object
+          @collection.push object
+        end
+        alias_method :<<, :push
+
+
+        def inspect
+          "<#{self.class.name} owner: #{@owner}, length: #{length}>"
+        end
+        alias_method :to_s, :inspect
 
 
         private
