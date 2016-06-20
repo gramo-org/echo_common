@@ -47,7 +47,7 @@ module EchoCommon
 
 
         def inspect
-          "<#{self.class.name} owner: #{@owner}, length: #{length}>"
+          "<#{self.class.name} owner: #{@owner.class.name}, length: #{length}>"
         end
         alias_method :to_s, :inspect
 
