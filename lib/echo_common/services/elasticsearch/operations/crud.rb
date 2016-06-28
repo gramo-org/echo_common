@@ -1,6 +1,17 @@
+require 'echo_common/error'
+
 module EchoCommon
   module Services
     class Elasticsearch
+
+      class BulkError < EchoCommon::Error
+        attr_reader :response
+
+        def initialize(response)
+          @response = response
+        end
+      end
+
       module Operations
         module Crud
           # Wraps elasticsearch client 'get' method, and returns the _source
@@ -69,10 +80,16 @@ module EchoCommon
 
           # Wraps elasticsearch client 'bulk' method and returns the result
           def bulk(data)
-            @client.bulk(
+            response = @client.bulk(
               index: @index, type: @type,
               body: data
             )
+
+            if response[:errors]
+              raise BulkError.new response
+            end
+
+            result
           end
         end
       end
