@@ -89,7 +89,7 @@ module EchoCommon
               raise BulkError.new response
             end
 
-            result
+            response
           end
         end
       end

@@ -50,6 +50,12 @@ describe EchoCommon::Services::Elasticsearch do
       }
 
     end
+
+    it "returns response from client when no errors" do
+      expect(client).to receive(:bulk).and_return(items: [])
+
+      expect { subject.bulk double }.to_not raise_error
+    end
   end
 
 end
