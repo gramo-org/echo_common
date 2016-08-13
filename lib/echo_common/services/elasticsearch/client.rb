@@ -71,6 +71,13 @@ module EchoCommon
           symbolize(response)[:hits]
         end
 
+        def suggest(index:, body:)
+          symbolize @client.suggest(
+            index: with_prefix(index),
+            body: body
+          )
+        end
+
         def create_index(index)
           create_all_indices(filter: -> (f) { mapping_file_name(index) == f })
         end
