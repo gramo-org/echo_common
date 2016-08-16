@@ -111,6 +111,11 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.create_index("recordings")
     end
+
+    it "fails indices_mapping_globs results in multiple files for the same index" do
+      pending
+      fail
+    end
   end
 
   describe "#create_all_indices" do

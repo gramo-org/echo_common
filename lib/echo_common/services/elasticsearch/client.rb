@@ -1,5 +1,6 @@
 require 'elasticsearch'
 require 'echo_common/utils/hash'
+require 'hanami/utils/kernel'
 
 module EchoCommon
   module Services
@@ -28,7 +29,7 @@ module EchoCommon
         #           }
         #
         def initialize(client_class: ::Elasticsearch::Client, **config)
-          @indices_mapping_glob = config.delete(:indices_mapping_glob)
+          @indices_mapping_globs = ::Hanami::Utils::Kernel.Array(config.delete(:indices_mapping_glob))
           @index_prefix         = config.delete(:index_prefix)
 
           @client = client_class.new config
@@ -79,7 +80,8 @@ module EchoCommon
         end
 
         def create_index(index)
-          create_all_indices(filter: -> (f) { mapping_file_name(index) == f })
+          json_file_name = mapping_file_name index
+          create_all_indices(filter: -> (f) { f.end_with? json_file_name })
         end
 
         def create_all_indices(filter: -> (f) { true })
@@ -117,18 +119,19 @@ module EchoCommon
         end
 
         def mapping_files
-          indices_mapping_globs.flat_map do |glob|
-            Dir.glob(glob)
+          @mapping_files ||= begin
+            file_paths = indices_mapping_globs.flat_map do |glob|
+              Dir.glob(glob)
+            end
           end
         end
 
         def mapping_file_name(prefixed_index)
-          unprefixed_index = prefixed_index.sub(@index_prefix, '')
-          indices_mapping_glob.sub('*', unprefixed_index)
+          prefixed_index.sub(@index_prefix, '') + '.json'
         end
 
         def indices_mapping_globs
-          @indices_mapping_glob || fail("You must set indices_mapping_glob when initialize the client.")
+          @indices_mapping_globs || fail("You must set indices_mapping_glob when initialize the client.")
         end
 
         def create_index_from_file(file_name)
