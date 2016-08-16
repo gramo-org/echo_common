@@ -1,5 +1,6 @@
 require 'elasticsearch'
 require 'echo_common/utils/hash'
+require 'echo_common/error'
 require 'hanami/utils/kernel'
 
 module EchoCommon
@@ -119,11 +120,16 @@ module EchoCommon
         end
 
         def mapping_files
-          @mapping_files ||= begin
-            file_paths = indices_mapping_globs.flat_map do |glob|
-              Dir.glob(glob)
-            end
+          file_paths = indices_mapping_globs.flat_map do |glob|
+            Dir.glob(glob)
           end
+
+          filenames = file_paths.map { |path| File.basename(path) }
+          if filenames.uniq != filenames
+            fail EchoCommon::Error.new "Your indices mapping glob yielded multiple files with equal filenames. File paths was calculated to be: #{file_paths}"
+          end
+
+          file_paths
         end
 
         def mapping_file_name(prefixed_index)
