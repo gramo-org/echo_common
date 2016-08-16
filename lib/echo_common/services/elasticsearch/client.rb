@@ -17,7 +17,7 @@ module EchoCommon
         #          Ex:
         #           {
         #             index_prefix: "staging_",                    # <- custom property defining the index prefix
-        #             indices_mapping_glob: "path/indices/*.json"  # <- custom property defining the glob to use to get mapping files
+        #             indices_mapping_glob: "path/indices/*.json"  # <- custom property defining the glob to use to get mapping files. Can also be an array of files/globs
         #             hosts: [{
         #               host: "127.0.0.1",
         #               port: 9200,
@@ -117,7 +117,9 @@ module EchoCommon
         end
 
         def mapping_files
-          Dir.glob(indices_mapping_glob)
+          indices_mapping_globs.flat_map do |glob|
+            Dir.glob(glob)
+          end
         end
 
         def mapping_file_name(prefixed_index)
@@ -125,7 +127,7 @@ module EchoCommon
           indices_mapping_glob.sub('*', unprefixed_index)
         end
 
-        def indices_mapping_glob
+        def indices_mapping_globs
           @indices_mapping_glob || fail("You must set indices_mapping_glob when initialize the client.")
         end
 
