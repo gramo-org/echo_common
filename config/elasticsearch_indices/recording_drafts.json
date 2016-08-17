@@ -1,0 +1,159 @@
+{
+  "mappings": {
+    "recording_draft": {
+      "properties": {
+        "alternative_isrcs": {
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "isrc": {
+              "type": "string"
+            }
+          }
+        },
+        "alternative_titles": {
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+          }
+        },
+        "duration_in_seconds": {
+          "type": "float"
+        },
+        "id": {
+          "type": "string"
+        },
+        "isrc": {
+          "type": "string",
+          "fields": {
+            "raw": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "label_name": {
+          "type": "string",
+          "fields": {
+            "raw": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "local_ids": {
+          "type": "nested",
+          "properties": {
+            "broadcaster_id": {
+              "type": "string"
+            },
+            "local_id": {
+              "type": "string"
+            }
+          }
+        },
+        "main_artist": {
+          "type": "string",
+          "fields": {
+            "raw": {
+              "type": "string",
+              "analyzer": "keyword"
+            }
+          }
+        },
+        "composers": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "paid_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string",
+              "fields": {
+                "raw": {
+                  "type": "string",
+                  "analyzer": "keyword"
+                }
+              }
+            },
+            "alternative_names": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "paid_recording_id": {
+          "type": "string"
+        },
+        "performer_note": {
+          "type": "string"
+        },
+        "recording_date": {
+          "type": "date",
+          "format": "strict_date_optional_time||epoch_millis"
+        },
+        "release_date": {
+          "type": "date",
+          "format": "strict_date_optional_time||epoch_millis"
+        },
+        "recorded_in": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "fields": {
+            "raw": {
+              "type": "string",
+              "analyzer": "keyword"
+            }
+          }
+        },
+        "tracks": {
+          "type": "nested",
+          "properties": {
+            "isrc": {
+              "type": "string"
+            },
+            "label_name": {
+              "type": "string"
+            },
+            "number": {
+              "type": "integer"
+            },
+            "p_line": {
+              "type": "string"
+            },
+            "release_id": {
+              "type": "string"
+            },
+            "side": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string"
+            },
+            "release_title": {
+              "type": "string"
+            },
+            "catalog_number": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

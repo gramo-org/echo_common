@@ -1,5 +1,7 @@
 require 'elasticsearch'
 require 'echo_common/utils/hash'
+require 'echo_common/error'
+require 'hanami/utils/kernel'
 
 module EchoCommon
   module Services
@@ -17,7 +19,7 @@ module EchoCommon
         #          Ex:
         #           {
         #             index_prefix: "staging_",                    # <- custom property defining the index prefix
-        #             indices_mapping_glob: "path/indices/*.json"  # <- custom property defining the glob to use to get mapping files
+        #             indices_mapping_glob: "path/indices/*.json"  # <- custom property defining the glob to use to get mapping files. Can also be an array of files/globs
         #             hosts: [{
         #               host: "127.0.0.1",
         #               port: 9200,
@@ -28,7 +30,7 @@ module EchoCommon
         #           }
         #
         def initialize(client_class: ::Elasticsearch::Client, **config)
-          @indices_mapping_glob = config.delete(:indices_mapping_glob)
+          @indices_mapping_globs = ::Hanami::Utils::Kernel.Array(config.delete(:indices_mapping_glob))
           @index_prefix         = config.delete(:index_prefix)
 
           @client = client_class.new config
@@ -79,7 +81,8 @@ module EchoCommon
         end
 
         def create_index(index)
-          create_all_indices(filter: -> (f) { mapping_file_name(index) == f })
+          json_file_name = mapping_file_name index
+          create_all_indices(filter: -> (f) { f.end_with? json_file_name })
         end
 
         def create_all_indices(filter: -> (f) { true })
@@ -117,16 +120,24 @@ module EchoCommon
         end
 
         def mapping_files
-          Dir.glob(indices_mapping_glob)
+          file_paths = indices_mapping_globs.flat_map do |glob|
+            Dir.glob(glob)
+          end
+
+          filenames = file_paths.map { |path| File.basename(path) }
+          if filenames.uniq != filenames
+            fail EchoCommon::Error.new "Your indices mapping glob yielded multiple files with equal filenames. File paths was calculated to be: #{file_paths}"
+          end
+
+          file_paths
         end
 
         def mapping_file_name(prefixed_index)
-          unprefixed_index = prefixed_index.sub(@index_prefix, '')
-          indices_mapping_glob.sub('*', unprefixed_index)
+          prefixed_index.sub(@index_prefix, '') + '.json'
         end
 
-        def indices_mapping_glob
-          @indices_mapping_glob || fail("You must set indices_mapping_glob when initialize the client.")
+        def indices_mapping_globs
+          @indices_mapping_globs || fail("You must set indices_mapping_glob when initialize the client.")
         end
 
         def create_index_from_file(file_name)

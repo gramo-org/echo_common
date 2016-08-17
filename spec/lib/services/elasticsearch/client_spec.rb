@@ -111,6 +111,16 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.create_index("recordings")
     end
+
+    it "fails indices_mapping_globs results in multiple files for the same index" do
+      allow(Dir).to receive(:glob) { |pass_through| pass_through }
+      allow(File).to receive(:read).and_return("fizz")
+      expect(client).to receive(:indices_mapping_globs).and_return(['/a/recordings.json', '/b/recordings.json'])
+
+      expect {
+        client.create_index("recordings")
+      }.to raise_error EchoCommon::Error, /Your indices mapping glob yielded multiple files with equal filenames/
+    end
   end
 
   describe "#create_all_indices" do
