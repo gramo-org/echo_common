@@ -31,7 +31,7 @@ describe EchoCommon::Hanami::Controllers::Jwt do
     JwtControllerTest.new.tap do |controller|
       controller.params = double(
         'env' => {},
-        'raw' => double(get: nil)
+        'raw' => {}
       )
     end
   end
@@ -53,7 +53,7 @@ describe EchoCommon::Hanami::Controllers::Jwt do
     payload = { 'data' => { 'foo' => 'bar' } }
     token = subject.encode_as_jwt payload
 
-    expect(subject.params.raw).to receive(:get).with('token').and_return token
+    expect(subject.params).to receive(:raw).and_return token: token
     expect(subject.jwt.to_h).to eq payload
   end
 
