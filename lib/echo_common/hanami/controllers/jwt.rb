@@ -18,7 +18,7 @@ module EchoCommon
 
             jwt = if header = params.env['HTTP_AUTHORIZATION']
               EchoCommon::Services::Jwt.from_http_header header
-            elsif token = params.raw[:token]
+            elsif token = params.raw[:token] || params.raw['token']
               EchoCommon::Services::Jwt.decode token
             end
 
