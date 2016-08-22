@@ -115,6 +115,12 @@ module EchoCommon
 
           def teardown_indices
             EchoCommon::Services::Elasticsearch.delete_all_indices
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
+          end
+
+          def purge_indices!
+            teardown_indices
+            setup_and_refresh_indices
           end
 
           class TestCluster
