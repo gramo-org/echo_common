@@ -80,15 +80,30 @@ module EchoCommon
               include ElasticsearchSpecHelper
 
               around do |example|
-                begin
-                  TestCluster.start
-                  BlockingProxyClient.route = true
-                  setup_and_refresh_indices
+                with_routing_turned_on do
                   example.run
-                ensure
-                  teardown_indices
-                  BlockingProxyClient.route = false
                 end
+              end
+
+
+              before(:all) do
+                with_routing_turned_on do
+                  TestCluster.start
+                  setup_and_refresh_indices
+                end
+              end
+
+              after(:all) do
+                with_routing_turned_on do
+                  teardown_indices
+                end
+              end
+
+              def with_routing_turned_on
+                BlockingProxyClient.route = true
+                yield
+              ensure
+                BlockingProxyClient.route = false
               end
             end
           end
@@ -100,6 +115,12 @@ module EchoCommon
 
           def teardown_indices
             EchoCommon::Services::Elasticsearch.delete_all_indices
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
+          end
+
+          def purge_indices!
+            teardown_indices
+            setup_and_refresh_indices
           end
 
           class TestCluster
