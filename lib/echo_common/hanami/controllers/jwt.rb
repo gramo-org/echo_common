@@ -1,4 +1,4 @@
-require 'echo_common/error'
+require 'echo_common/errors'
 require 'echo_common/services/jwt'
 
 module EchoCommon

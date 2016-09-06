@@ -1,6 +1,6 @@
 require 'elasticsearch'
 require 'echo_common/utils/hash'
-require 'echo_common/error'
+require 'echo_common/errors'
 require 'hanami/utils/kernel'
 
 module EchoCommon

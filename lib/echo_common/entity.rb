@@ -1,5 +1,5 @@
 require 'echo_common'
-require 'echo_common/error'
+require 'echo_common/errors'
 require 'hanami-model'
 
 module EchoCommon

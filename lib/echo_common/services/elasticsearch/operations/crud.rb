@@ -1,4 +1,4 @@
-require 'echo_common/error'
+require 'echo_common/errors'
 
 module EchoCommon
   module Services

@@ -1,4 +1,4 @@
-require 'echo_common/error'
+require 'echo_common/errors'
 
 unless defined? ::Hanami::Mailer
   fail EchoCommon::Error, "Didn't find Hanami::Mailer"

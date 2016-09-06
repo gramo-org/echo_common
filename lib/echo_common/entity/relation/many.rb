@@ -1,5 +1,5 @@
 require 'forwardable'
-require 'echo_common/error'
+require 'echo_common/errors'
 
 module EchoCommon
   class Entity
