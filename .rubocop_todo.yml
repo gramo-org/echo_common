@@ -61,7 +61,6 @@ Lint/UnusedBlockArgument:
 Lint/UnusedMethodArgument:
   Exclude:
     - 'lib/echo_common/sequel/sql_literal.rb'
-    - 'spec/lib/hanami/controllers/authentication_spec.rb'
     - 'spec/lib/hanami/controllers/jwt_spec.rb'
     - 'spec/lib/state_machine/machine_spec.rb'
 
@@ -618,7 +617,6 @@ Style/SpaceInsideHashLiteralBraces:
     - 'lib/echo_common/recording_draft_repository.rb'
     - 'lib/echo_common/rspec/helpers/jwt_auth_helper.rb'
     - 'spec/lib/configuration_spec.rb'
-    - 'spec/lib/hanami/controllers/authentication_spec.rb'
     - 'spec/lib/hanami/models/coercer/pg_json_spec.rb'
     - 'spec/lib/services/elasticsearch/client_spec.rb'
     - 'spec/lib/services/jwt_spec.rb'
