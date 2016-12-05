@@ -1,0 +1,40 @@
+inherit_from: .rubocop_todo.yml
+
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Style/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
+
+AllCops:
+  TargetRubyVersion: 2.3
