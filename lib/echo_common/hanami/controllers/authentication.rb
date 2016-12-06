@@ -36,13 +36,13 @@ module EchoCommon
 
         def authenticated?
           jwt.get('data.authenticated') == true && !current_user_id.nil?
-        rescue Jwt::JwtError
+        rescue JWT::ExpiredSignature
           false
         end
 
         def current_user_id
           jwt.get('data.user.id')
-        rescue Jwt::JwtError
+        rescue JWT::ExpiredSignature
           nil
         end
       end

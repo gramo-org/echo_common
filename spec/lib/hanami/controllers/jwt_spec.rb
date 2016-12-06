@@ -57,10 +57,10 @@ describe EchoCommon::Hanami::Controllers::Jwt do
     expect(subject.jwt.to_h).to eq payload
   end
 
-  it "errs on invalid token" do
-    payload = { 'data' => { 'foo' => 'bar' } }
-    unsigned_token = JWT.encode payload, nil, false
-    subject.params.env.merge!('HTTP_AUTHORIZATION' => "Bearer #{unsigned_token}")
-    expect { subject.jwt }.to raise_error(described_class::JwtError)
+  it "raises error on ExpiredSignature" do
+    payload = { 'data' => { 'foo' => 'bar' }, 'exp' => (Time.now.to_i - 5) }
+    expired_token = subject.encode_as_jwt payload
+    subject.params.env.merge!('HTTP_AUTHORIZATION' => "Bearer #{expired_token}")
+    expect { subject.jwt }.to raise_error JWT::ExpiredSignature
   end
 end

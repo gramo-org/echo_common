@@ -28,7 +28,7 @@ describe EchoCommon::Hanami::Controllers::Authentication do
 
     it 'is nil if token has expired' do
       expect(subject).to receive(:jwt)
-        .and_raise EchoCommon::Hanami::Controllers::Jwt::JwtError
+        .and_raise JWT::ExpiredSignature
 
       expect(subject.send(:current_user_id)).to be_nil
     end
@@ -57,7 +57,7 @@ describe EchoCommon::Hanami::Controllers::Authentication do
 
     it 'is false if token has expired' do
       expect(subject).to receive(:jwt)
-        .and_raise EchoCommon::Hanami::Controllers::Jwt::JwtError
+        .and_raise JWT::ExpiredSignature
 
       expect(subject.send(:authenticated?)).to eq false
     end
