@@ -10,8 +10,6 @@ module EchoCommon
       # @see EchoCommon::Hanami::Controllers::Authentication
       #
       module Jwt
-        class JwtError < EchoCommon::Error; end
-
         def jwt
           @jwt ||= begin
             token = nil
@@ -25,8 +23,6 @@ module EchoCommon
             halt 401, "Signature has expired" if jwt.nil?
             jwt
           end
-        rescue JWT::DecodeError
-          raise Jwt::JwtError
         end
 
         def encode_as_jwt(payload)

@@ -2,9 +2,10 @@ require 'spec_helper'
 require 'echo_common/hanami/controllers/authentication'
 require 'securerandom'
 
+# rubocop:disable Metrics/BlockLength
 describe EchoCommon::Hanami::Controllers::Authentication do
   class AuthenticationControllerTest
-    def self.before(args)
+    def self.before(_args)
     end
 
     include EchoCommon::Hanami::Controllers::Authentication
@@ -14,16 +15,51 @@ describe EchoCommon::Hanami::Controllers::Authentication do
 
   subject { AuthenticationControllerTest.new }
 
-  it "gets logged in user from jwt" do
-    user = { 'id' => SecureRandom.uuid }
-    subject.jwt = EchoCommon::Services::Jwt::Token.new [{ 'data' => { 'user' => user }}]
+  let(:user_id) { SecureRandom.uuid }
+  let(:user)    { { 'id' => user_id } }
+  let(:payload) { { 'data' => { 'authenticated' => true, 'user' => user } } }
 
-    expect(subject.send(:current_user_id)).to eq subject.jwt.get('data.user.id')
+  describe '#current_user_id' do
+    it 'gets logged in user from jwt' do
+      subject.jwt = EchoCommon::Services::Jwt::Token.new [payload]
+
+      expect(subject.send(:current_user_id)).to eq user_id
+    end
+
+    it 'is nil if token has expired' do
+      expect(subject).to receive(:jwt)
+        .and_raise JWT::ExpiredSignature
+
+      expect(subject.send(:current_user_id)).to be_nil
+    end
   end
 
-  it "gets a falsy value for current_user_id if jwt does not contain user" do
-    subject.jwt = EchoCommon::Services::Jwt::Token.new [{ 'data' => { 'foo' => 'bar' }}]
+  describe '#authenticated?' do
+    it 'is true when user and authenticated is set correctly' do
+      subject.jwt = EchoCommon::Services::Jwt::Token.new [payload]
 
-    expect(subject.send(:authenticated?)).to be_falsey
+      expect(subject.send(:authenticated?)).to eq true
+    end
+
+    it 'is false if token does not contain user' do
+      payload['data'].delete 'user'
+      subject.jwt = EchoCommon::Services::Jwt::Token.new [payload]
+
+      expect(subject.send(:authenticated?)).to eq false
+    end
+
+    it 'is false if token does not contain authenticated true' do
+      payload['data'].delete 'authenticated'
+      subject.jwt = EchoCommon::Services::Jwt::Token.new [payload]
+
+      expect(subject.send(:authenticated?)).to eq false
+    end
+
+    it 'is false if token has expired' do
+      expect(subject).to receive(:jwt)
+        .and_raise JWT::ExpiredSignature
+
+      expect(subject.send(:authenticated?)).to eq false
+    end
   end
 end
