@@ -32,7 +32,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         index: "testing_foo",
         type: "bar",
         id: "baz"
-      )
+      ).and_return({})
 
       client.get(index: "foo", type: "bar", id: "baz")
     end
@@ -45,7 +45,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         type: "bar",
         id: "baz",
         body: "fizz"
-      )
+      ).and_return({})
 
       client.index(index: "foo", type: "bar", id: "baz", body: "fizz")
     end
@@ -58,7 +58,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         type: "bar",
         id: "baz",
         body: "fizz"
-      )
+      ).and_return({})
 
       client.update(index: "foo", type: "bar", id: "baz", body: "fizz")
     end
@@ -70,7 +70,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         index: "testing_foo",
         type: "bar",
         id: "baz"
-      )
+      ).and_return({})
 
       client.delete(index: "foo", type: "bar", id: "baz")
     end
@@ -82,7 +82,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         index: "testing_foo",
         type: "bar",
         body: "fizz"
-      )
+      ).and_return({})
 
       client.bulk(index: "foo", type: "bar", body: "fizz")
     end
@@ -94,7 +94,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         index: "testing_foo",
         type: "bar",
         body: "fizz"
-      )
+      ).and_return({})
 
       client.search(index: "foo", type: "bar", body: "fizz")
     end
@@ -107,7 +107,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
       expect(elasticsearch_client.indices).to receive(:create).with(
         index: "testing_recordings",
         body: "fizz"
-      )
+      ).and_return({})
 
       client.create_index("recordings")
     end
