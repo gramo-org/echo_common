@@ -1,8 +1,9 @@
 require 'forwardable'
 require 'echo_common/error'
+require 'hanami-model'
 
 module EchoCommon
-  class Entity
+  class Entity < ::Hanami::Entity
     module Relation
       # Class representing a relation between one-to-many objects
       #
