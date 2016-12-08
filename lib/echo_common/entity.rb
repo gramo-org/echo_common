@@ -1,6 +1,7 @@
-require 'echo_common'
-require 'echo_common/error'
 require 'hanami-model'
+
+require_relative 'utils/hashify'
+require_relative 'error'
 
 module EchoCommon
   class Entity < ::Hanami::Entity
@@ -18,6 +19,22 @@ module EchoCommon
           - https://github.com/hanami/model/blob/8775b815edfaef38a1d98cdd83704bbcf2c553f9/lib/hanami/entity/schema.rb#L139-L144
 
       TXT
+    end
+
+    # Serialize self in to a hash
+    #
+    # Hanami's default implementation does not serialize deep.
+    # We do.
+    #
+    # @return Hash
+    def to_h
+      hash = super
+
+      hash.keys.each do |attr_name|
+        hash[attr_name] = Utils::Hashify[hash[attr_name]]
+      end
+
+      hash
     end
   end
 end
