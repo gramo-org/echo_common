@@ -2,8 +2,8 @@ require 'rack/test'
 require 'database_cleaner'
 require 'echo_common/rspec/helpers/db_clean_helper'
 
-unless defined? ::Hanami::Container
-  fail EchoCommon::Error, "Didn't find Hanami::Container"
+unless defined? ::Hanami
+  fail EchoCommon::Error, "Didn't find Hanami"
 end
 
 module EchoCommon
