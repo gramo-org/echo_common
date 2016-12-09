@@ -8,15 +8,12 @@ module EchoCommon
   class Entity < ::Hanami::Entity
     include Hanami::Utils::ClassAttribute
 
-    class_attribute :freeze_after_init
-    self.freeze_after_init = true
-
     def self.create_only_attributes(*)
       raise <<-TXT
 
 
         No longer supported. Schema on entity is frozen after definition.
-        Entities by default are frozen. See class freeze_after_init,
+        Entities by default are frozen. See class immutable,
 
         If we where to suppport this, Thorbjørn think it needs to make it's
         way in to hanami's attributes DSL.
@@ -28,9 +25,31 @@ module EchoCommon
       TXT
     end
 
+    class_attribute :immutable
+    self.immutable = true
+
     def initialize(attributes = nil)
+      return super if self.class.immutable
+
       @attributes = self.class.schema[attributes]
-      freeze if self.class.freeze_after_init
+    end
+
+    def method_missing(name, *args)
+      return super if self.class.immutable
+
+      if name.to_s.end_with? '='
+        attr_name = name[0...-1]
+        @attributes[attr_name.to_sym] = args[0]
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(name, _include_all)
+      return super if self.class.immutable
+
+      attribute = name.to_s.end_with?('=') ? name[0...-1] : name
+      attribute?(attribute) || super
     end
 
 

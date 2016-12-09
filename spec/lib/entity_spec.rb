@@ -5,7 +5,7 @@ require 'echo_common/entity'
 module EchoCommon
   describe Entity do
     class TestBook < Entity
-      self.freeze_after_init = false
+      self.immutable = false
 
       attributes do
         attribute :name,    Types::Strict::String
@@ -25,7 +25,20 @@ module EchoCommon
         expect(TestPerson.new(name: 'Peter')).to be_frozen
       end
 
+      it 'cannot mutate frozen state' do
+        person = TestPerson.new name: 'Peter'
+        expect { person.name = 'TH' }.to raise_error NoMethodError
+      end
+
       it 'can be configured on class level to skip frozen on init' do
+        expect(TestBook.new(name: 'Ruby')).to_not be_frozen
+      end
+
+      it 'has setters when entity is mutable' do
+        book = TestBook.new name: 'Ruby'
+
+        expect { book.name = 'JavaScript' }
+          .to change(book, :name).to 'JavaScript'
       end
     end
 
