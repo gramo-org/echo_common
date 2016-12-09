@@ -1,8 +1,12 @@
+# rubocop:disable Metrics/BlockLength
+
 require 'echo_common/entity'
 
 module EchoCommon
   describe Entity do
     class TestBook < Entity
+      self.freeze_after_init = false
+
       attributes do
         attribute :name,    Types::Strict::String
         attribute :author,  Types::Strict::String
@@ -13,6 +17,15 @@ module EchoCommon
       attributes do
         attribute :name,  Types::Strict::String
         attribute :books, Types::Collection(TestBook).default([])
+      end
+    end
+
+    describe 'frozen state' do
+      it 'is frozen as a default' do
+        expect(TestPerson.new(name: 'Peter')).to be_frozen
+      end
+
+      it 'can be configured on class level to skip frozen on init' do
       end
     end
 

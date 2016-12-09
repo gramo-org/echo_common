@@ -1,15 +1,22 @@
 require 'hanami-model'
+require 'hanami/utils/class_attribute'
 
 require_relative 'utils/hashify'
 require_relative 'error'
 
 module EchoCommon
   class Entity < ::Hanami::Entity
+    include Hanami::Utils::ClassAttribute
+
+    class_attribute :freeze_after_init
+    self.freeze_after_init = true
+
     def self.create_only_attributes(*)
       raise <<-TXT
 
 
         No longer supported. Schema on entity is frozen after definition.
+        Entities by default are frozen. See class freeze_after_init,
 
         If we where to suppport this, Thorbjørn think it needs to make it's
         way in to hanami's attributes DSL.
@@ -20,6 +27,12 @@ module EchoCommon
 
       TXT
     end
+
+    def initialize(attributes = nil)
+      @attributes = self.class.schema[attributes]
+      freeze if self.class.freeze_after_init
+    end
+
 
     # Serialize self in to a hash
     #
