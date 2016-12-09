@@ -20,7 +20,7 @@ module EchoCommon
             include EchoCommon::RSpec::Helpers::DbCleanHelper
 
             let :app do
-              ::Hanami::Container.new
+              ::Hanami.app
             end
           end
         end
