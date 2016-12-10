@@ -16,10 +16,9 @@ module EchoCommon
       include Entity::HashifyNestedObjects
 
       attributes do
-        attribute :name,          Types::Strict::String
-        attribute :author,        Types::Strict::String
-        attribute :main_release,  Types::Schema::CoercibleType.new(TestRelease)
-        attribute :releases,      Types::Collection(TestRelease).default([])
+        attribute :name,      Types::Strict::String
+        attribute :author,    Types::Strict::String
+        attribute :releases,  Types::Collection(TestRelease).default([])
       end
     end
 
@@ -59,16 +58,6 @@ module EchoCommon
         book = TestBook.new name: 'Ruby'
         expect { book.year = 2027 }.to raise_error NoMethodError
       end
-    end
-
-    it 'has a attribute which maintains type' do
-      release = TestRelease.new year: 2000
-      book = TestBook.new main_release: release
-
-      expect(book.main_release).to be_a TestRelease
-
-      book = TestBook.new main_release: { year: 2000 }
-      expect(book.main_release).to be_a TestRelease
     end
 
     describe 'to_h' do

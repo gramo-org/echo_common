@@ -29,6 +29,8 @@ module EchoCommon
 
         hash
       end
+
+      alias to_hash to_h
     end
   end
 end
