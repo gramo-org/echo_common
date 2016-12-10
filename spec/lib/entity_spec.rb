@@ -1,12 +1,11 @@
 # rubocop:disable Metrics/BlockLength
 
 require 'echo_common/entity'
+require 'echo_common/mutable_entity'
 
 module EchoCommon
-  describe Entity do
-    class TestBook < Entity
-      self.immutable = false
-
+  describe "Entity and MutableEntity" do
+    class TestBook < MutableEntity
       attributes do
         attribute :name,    Types::Strict::String
         attribute :author,  Types::Strict::String
@@ -20,8 +19,8 @@ module EchoCommon
       end
     end
 
-    describe 'frozen state' do
-      it 'is frozen as a default' do
+    describe Entity do
+      it 'has frozen state' do
         expect(TestPerson.new(name: 'Peter')).to be_frozen
       end
 
@@ -29,16 +28,23 @@ module EchoCommon
         person = TestPerson.new name: 'Peter'
         expect { person.name = 'TH' }.to raise_error NoMethodError
       end
+    end
 
-      it 'can be configured on class level to skip frozen on init' do
+    describe MutableEntity do
+      it 'is not frozen' do
         expect(TestBook.new(name: 'Ruby')).to_not be_frozen
       end
 
-      it 'has setters when entity is mutable' do
+      it 'has setters which mutates the entity' do
         book = TestBook.new name: 'Ruby'
 
         expect { book.name = 'JavaScript' }
           .to change(book, :name).to 'JavaScript'
+      end
+
+      it 'cannot mutate attributes it does not have' do
+        book = TestBook.new name: 'Ruby'
+        expect { book.year = 2027 }.to raise_error NoMethodError
       end
     end
 
