@@ -11,7 +11,7 @@ module EchoCommon
           isrc: 'ISRC123',
           duration_in_seconds: 125,
           recording_date: Date.new(2015, 10, 1),
-          composers: [{ name: 'Jackson' }],
+          composers: [{ name: 'Jackson', alternative_names: [{ name: 'J' }] }],
           alternative_titles: [{ title: 'Thriller!' }]
         )
       end
@@ -24,7 +24,7 @@ module EchoCommon
           isrc: 'ISRC123',
           duration_in_seconds: 125,
           recording_date: Date.new(2015, 10, 1),
-          composers: [{ name: 'Jackson', alternative_names: [] }],
+          composers: [{ name: 'Jackson', alternative_names: [{ name: 'J' }] }],
           local_ids: [],
           alternative_isrcs: [],
           alternative_titles: [{ title: 'Thriller!' }],

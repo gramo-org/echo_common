@@ -1,18 +1,30 @@
 # rubocop:disable Metrics/BlockLength
 
 require 'echo_common/entity'
+require 'echo_common/entity/hashify_nested_objects'
 require 'echo_common/mutable_entity'
 
 module EchoCommon
   describe "Entity and MutableEntity" do
-    class TestBook < MutableEntity
+    class TestRelease < MutableEntity
       attributes do
-        attribute :name,    Types::Strict::String
-        attribute :author,  Types::Strict::String
+        attribute :year, Types::Strict::Int
+      end
+    end
+
+    class TestBook < MutableEntity
+      include Entity::HashifyNestedObjects
+
+      attributes do
+        attribute :name,      Types::Strict::String
+        attribute :author,    Types::Strict::String
+        attribute :releases,  Types::Collection(TestRelease).default([])
       end
     end
 
     class TestPerson < Entity
+      include Entity::HashifyNestedObjects
+
       attributes do
         attribute :name,  Types::Strict::String
         attribute :books, Types::Collection(TestBook).default([])
@@ -52,14 +64,24 @@ module EchoCommon
       subject(:peter) do
         TestPerson.new(
           name: 'Peter',
-          books: [{ name: 'Ruby 1.0', author: 'Kjell-Magne' }]
+          books: [
+            {
+              name: 'Ruby 1.0', author: 'Kjell-Magne', releases: [{ year: 2000 }]
+            }
+          ]
         )
       end
 
       it 'returns nested data' do
         expect(peter.to_h).to eq({
           name: 'Peter',
-          books: [{ name: 'Ruby 1.0', author: 'Kjell-Magne' }]
+          books: [
+            {
+              name: 'Ruby 1.0',
+              author: 'Kjell-Magne',
+              releases: [{ year: 2000 }]
+            }
+          ]
         })
       end
     end

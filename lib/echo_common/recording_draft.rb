@@ -1,9 +1,12 @@
 # coding: utf-8
 
 require 'echo_common/entity'
+require 'echo_common/entity/hashify_nested_objects'
 
 module EchoCommon
   class RecordingDraft < EchoCommon::Entity
+    include Entity::HashifyNestedObjects
+
     class AlternativeIsrc < EchoCommon::Entity
       attributes do
         attribute :isrc,        Types::String
@@ -26,9 +29,11 @@ module EchoCommon
     end
 
     class Composer < EchoCommon::Entity
+      include Entity::HashifyNestedObjects
+
       attributes do
         attribute :name,              Types::Strict::String
-        attribute :alternative_names, Types::Coercible::Array.member(AlternativeName).default([])
+        attribute :alternative_names, Types::Collection(AlternativeName).default([])
       end
     end
 
