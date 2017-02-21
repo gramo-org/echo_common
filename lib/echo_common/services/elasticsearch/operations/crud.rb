@@ -53,7 +53,7 @@ module EchoCommon
             missing_ids =
               result[:docs].find_all { |doc| !doc[:found] }.map { |doc| doc[:_id] }
             raise MgetMissingIDsError,
-                  MgetMissingIDsError.to_message(missing_ids) if missing_ids
+                  MgetMissingIDsError.to_message(missing_ids) unless missing_ids.empty?
             result[:docs].map { |doc| doc[:_source] }
           end
 
