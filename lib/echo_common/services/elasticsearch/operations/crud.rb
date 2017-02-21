@@ -6,7 +6,8 @@ module EchoCommon
 
       class MgetMissingIDsError < EchoCommon::Error
         def message
-          "mget failed due to IDs with no documents in index: #{@message.join ', '}"
+          missing_ids = super
+          "mget failed due to IDs with no documents in index: #{missing_ids.join ', '}"
         end
       end
 
