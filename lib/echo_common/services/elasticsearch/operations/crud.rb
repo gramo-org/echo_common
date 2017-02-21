@@ -41,6 +41,7 @@ module EchoCommon
           #
           # @see #get
           def mget(ids)
+            return if !ids || ids.empty?
             result = @client.mget index: @index, type: @type, body: { ids: ids }
             if (result[:found])
               result[:_source]
