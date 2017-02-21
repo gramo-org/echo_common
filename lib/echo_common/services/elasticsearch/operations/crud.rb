@@ -4,6 +4,13 @@ module EchoCommon
   module Services
     class Elasticsearch
 
+      class MgetMissingIDsError < EchoCommon::Error
+
+        def self.to_message(missing_ids)
+          "mget failed due to IDs with no documents in index: #{missing_ids.join ', '}"
+        end
+      end
+
       class BulkError < EchoCommon::Error
         attr_reader :response
 
@@ -37,6 +44,18 @@ module EchoCommon
             end
           end
 
+          # Wraps elasticsearch client 'mget' method.
+          #
+          # @see #get
+          def mget(ids)
+            return if !ids || ids.empty?
+            result = @client.mget index: @index, type: @type, body: { ids: ids }
+            missing_ids =
+              result[:docs].find_all { |doc| !doc[:found] }.map { |doc| doc[:_id] }
+            raise MgetMissingIDsError,
+                  MgetMissingIDsError.to_message(missing_ids) unless missing_ids.empty?
+            result[:docs].map { |doc| doc[:_source] }
+          end
 
           # Wraps elasticsearch client 'index' method, and returns the result
           #

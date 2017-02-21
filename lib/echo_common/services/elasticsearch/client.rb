@@ -40,6 +40,10 @@ module EchoCommon
           symbolize @client.get(index: with_prefix(index), type: type, id: id)
         end
 
+        def mget(index:, type:, body:)
+          symbolize @client.mget(index: with_prefix(index), type: type, body: body)
+        end
+
         def index(index:, type:, id:, body:)
           symbolize @client.index(index: with_prefix(index), type: type, id: id, body: body)
         end
