@@ -37,6 +37,15 @@ module EchoCommon
             end
           end
 
+          # Wraps elasticsearch client 'mget' method.
+          #
+          # @see #get
+          def mget(ids)
+            result = @client.mget index: @index, type: @type, body: { ids: ids }
+            if (result[:found])
+              result[:_source]
+            end
+          end
 
           # Wraps elasticsearch client 'index' method, and returns the result
           #
