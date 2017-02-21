@@ -38,6 +38,18 @@ describe EchoCommon::Services::Elasticsearch::Client do
     end
   end
 
+  describe "#mget" do
+    it "multi gets docs using prefixed index" do
+      expect(elasticsearch_client).to receive(:mget).with(
+        index: "testing_foo",
+        type: "bar",
+        body: "baz"
+      )
+
+      client.mget(index: "foo", type: "bar", body: "baz")
+    end
+  end
+
   describe "#index" do
     it "indexes doc using prefixed index" do
       expect(elasticsearch_client).to receive(:index).with(
