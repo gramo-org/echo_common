@@ -10,7 +10,8 @@ module EchoCommon
           {
             id: SecureRandom.uuid,
             name: 'Herp Derp',
-            email: 'herpderp@skalar.no'
+            email: 'herpderp@skalar.no',
+            locale: 'no'
           }
         end
 
