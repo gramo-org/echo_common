@@ -45,6 +45,12 @@ module EchoCommon
         rescue JWT::ExpiredSignature
           nil
         end
+
+        def current_user_locale
+          jwt.get('data.user.locale')
+        rescue JWT::ExpiredSignature
+          nil
+        end
       end
     end
   end
