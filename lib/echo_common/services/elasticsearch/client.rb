@@ -103,12 +103,6 @@ module EchoCommon
           @client.indices.delete index: with_prefix("*")
         end
 
-        def delete_all_indices_contents
-          @client.delete_by_query(
-            index: with_prefix("*"), body: { query: { match_all: {} } }
-          )
-        end
-
         # @see ::Elasticsearch::API::Indices::Actions.refresh
         def refresh_indices(index = "*")
           @client.indices.refresh index: with_prefix(index)

@@ -51,12 +51,6 @@ module EchoCommon
         new.delete_all_indices
       end
 
-      # deletes all indices contents.
-      # does not require index and type to be configured on the service
-      def self.delete_all_indices_contents
-        new.delete_all_indices_contents
-      end
-
       # creates all indices.
       # does not require index and type to be configured on the service
       def self.create_all_indices

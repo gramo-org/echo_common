@@ -7,10 +7,6 @@ module EchoCommon
             @client.delete_all_indices
           end
 
-          def delete_all_indices_contents
-            @client.delete_all_indices_contents
-          end
-
           def create_all_indices
             @client.create_all_indices
           end
