@@ -34,6 +34,7 @@ module EchoCommon
           @index_prefix         = config.delete(:index_prefix)
 
           @client = client_class.new config
+          @file_cache = {}
         end
 
         def get(index:, type:, id:)
@@ -124,16 +125,18 @@ module EchoCommon
         end
 
         def mapping_files
-          file_paths = indices_mapping_globs.flat_map do |glob|
-            Dir.glob(glob)
-          end
+          @file_paths ||= begin
+            file_paths = indices_mapping_globs.flat_map do |glob|
+              Dir.glob(glob)
+            end
 
-          filenames = file_paths.map { |path| File.basename(path) }
-          if filenames.uniq != filenames
-            fail EchoCommon::Error.new "Your indices mapping glob yielded multiple files with equal filenames. File paths was calculated to be: #{file_paths}"
-          end
+            filenames = file_paths.map { |path| File.basename(path) }
+            if filenames.uniq != filenames
+              fail EchoCommon::Error.new "Your indices mapping glob yielded multiple files with equal filenames. File paths was calculated to be: #{file_paths}"
+            end
 
-          file_paths
+            file_paths
+          end
         end
 
         def mapping_file_name(prefixed_index)
@@ -145,13 +148,19 @@ module EchoCommon
         end
 
         def create_index_from_file(file_name)
-          index_definition = File.read(file_name)
+          index_definition = read_file(file_name)
           index_name = file_name[/(\w*)\.json/, 1]
 
           @client.indices.create(
             index: with_prefix(index_name),
             body: index_definition
           )
+        end
+
+        def read_file(file_name)
+          return @file_cache[file_name] if @file_cache[file_name]
+
+          @file_cache[file_name] = File.read(file_name)
         end
 
         def symbolize(hash)
