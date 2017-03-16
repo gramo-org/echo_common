@@ -81,12 +81,12 @@ module EchoCommon
 
               around do |example|
                 begin
-                  TestCluster.start
+                  did_start = TestCluster.start
                   BlockingProxyClient.route = true
-                  setup_and_refresh_indices
+                  setup_and_refresh_indices if did_start
                   example.run
                 ensure
-                  teardown_indices
+                  clear_indices
                   BlockingProxyClient.route = false
                 end
               end
@@ -102,28 +102,35 @@ module EchoCommon
             EchoCommon::Services::Elasticsearch.delete_all_indices
           end
 
+          def clear_indices
+            EchoCommon::Services::Elasticsearch.delete_all_indices_contents
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
+          end
+
           class TestCluster
             @@started = false
 
             def self.started
               @@started ||= !!begin
-                JSON.parse(Net::HTTP.get(URI("http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health")))
+                url = "http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health"
+                JSON.parse(Net::HTTP.get(URI(url)))
               rescue
                 nil
               end
             end
 
             def self.start
-              unless self.started
-                Elasticsearch::Extensions::Test::Cluster.start cluster_config
-                at_exit do
-                  TestCluster.stop
-                end
+              return if self.started
+
+              Elasticsearch::Extensions::Test::Cluster.start cluster_config
+              at_exit do
+                Enable.teardown_indices
+                TestCluster.stop
               end
-              @@started = true
             end
             def self.stop
               Elasticsearch::Extensions::Test::Cluster.stop cluster_config
+              @@started = false
             end
 
             def self.config=(config)
