@@ -18,7 +18,6 @@ WORKDIR /app
 
 # copy over Gemfile and install bundle
 ADD Gemfile .
-ADD Gemfile.lock .
 ADD echo_common.gemspec .
 ADD lib/echo_common/version.rb /app/lib/echo_common/version.rb
 
