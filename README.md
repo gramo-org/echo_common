@@ -2,7 +2,7 @@
 
 Common code used by different part of Echo.
 
-[![Build Status](https://snap-ci.com/gramo-org/echo_common/branch/master/build_image)](https://snap-ci.com/gramo-org/echo_common/branch/master)
+[ ![Codeship Status for gramo-org/echo_common](https://app.codeship.com/projects/622a8210-f078-0134-bc88-3e50d5e616b5/status?branch=master)](https://app.codeship.com/projects/209118)
 
 ## Installation
 
