@@ -51,10 +51,22 @@ module EchoCommon
         new.delete_all_indices
       end
 
+      # deletes a single index.
+      # does not require index and type to be configured on the service
+      def self.delete_index(index)
+        new(index: index).delete_index
+      end
+
       # creates all indices.
       # does not require index and type to be configured on the service
       def self.create_all_indices
         new.create_all_indices
+      end
+
+      # creates a single index.
+      # does not require index and type to be configured on the service
+      def self.create_index(index)
+        new(index: index).create_index
       end
 
       # calls instance method put_alias.
