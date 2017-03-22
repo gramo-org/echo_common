@@ -99,20 +99,6 @@ module EchoCommon
           @client.indices.delete index: with_prefix(index), ignore: [404]
         end
 
-        def delete_index_docs(index)
-          finished = false
-          until finished
-            result = @client.delete_by_query(
-              index: with_prefix(index),
-              body: { query: { match_all: {} } },
-              conflicts: 'proceed',
-              wait_for_completion: true
-            )
-            finished = result['version_conflicts'].zero?
-            result
-          end
-        end
-
         def delete_all_indices
           @client.indices.delete index: with_prefix("*")
         end

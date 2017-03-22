@@ -57,12 +57,6 @@ module EchoCommon
         new(index: index).delete_index
       end
 
-      # deletes all docs in a single index.
-      # does not require index and type to be configured on the service
-      def self.delete_index_docs(index)
-        new(index: index).delete_index_docs
-      end
-
       # creates all indices.
       # does not require index and type to be configured on the service
       def self.create_all_indices
