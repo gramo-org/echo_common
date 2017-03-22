@@ -90,7 +90,7 @@ module EchoCommon
               around do |example|
                 begin
                   BlockingProxyClient.route = true
-                  TestCluster.start
+                  TestCluster.start(method(:setup_and_refresh_indices))
                   clear_dirty_indices
                   example.run
                 ensure
@@ -100,8 +100,13 @@ module EchoCommon
             end
           end
 
+          # NB: some spec helper inherit and piggy back this method.
+          # E.g. to create search alias in echo.
           def setup_and_refresh_indices
-            Enable.setup_and_refresh_indices
+            EchoCommon::Services::Elasticsearch.delete_all_indices
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
+            EchoCommon::Services::Elasticsearch.create_all_indices
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
           def clear_dirty_indices
@@ -115,30 +120,23 @@ module EchoCommon
             EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
-          def self.setup_and_refresh_indices
-            EchoCommon::Services::Elasticsearch.delete_all_indices
-            EchoCommon::Services::Elasticsearch.client.refresh_indices
-            EchoCommon::Services::Elasticsearch.create_all_indices
-            EchoCommon::Services::Elasticsearch.client.refresh_indices
-          end
-
           class TestCluster
             @@started = false
 
-            def self.started
+            def self.started(refresh_method)
               @@started ||= !!begin
                 started = JSON.parse(Net::HTTP.get(URI("http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health")))
-                Enable.setup_and_refresh_indices
+                refresh_method.call
                 started
               rescue
                 nil
               end
             end
 
-            def self.start
-              unless self.started
+            def self.start(refresh_method)
+              unless self.started(refresh_method)
                 Elasticsearch::Extensions::Test::Cluster.start cluster_config
-                Enable.setup_and_refresh_indices
+                refresh_method.call
                 at_exit do
                   TestCluster.stop
                 end
