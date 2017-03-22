@@ -1,0 +1,5 @@
+echo_common:
+  build: 
+    image: gramoorg/echo_common
+    dockerfile_path: Dockerfile
+  cached: true
