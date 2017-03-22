@@ -15,6 +15,10 @@ module EchoCommon
             @client.delete_index @index
           end
 
+          def delete_index_docs
+            @client.delete_index_docs @index
+          end
+
           def refresh_index
             @client.refresh_indices @index
           end

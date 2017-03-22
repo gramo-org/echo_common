@@ -104,11 +104,18 @@ module EchoCommon
           def setup_query_alias; end
 
           def setup_and_refresh_indices
+            delete_and_refresh_indices
+            create_and_refresh_indices
+            setup_query_alias
+          end
+
+          def delete_and_refresh_indices
             EchoCommon::Services::Elasticsearch.delete_all_indices
             EchoCommon::Services::Elasticsearch.client.refresh_indices
+          end
 
+          def create_and_refresh_indices
             EchoCommon::Services::Elasticsearch.create_all_indices
-            setup_query_alias
             EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
@@ -116,12 +123,7 @@ module EchoCommon
             dirty_indices = BlockingProxyClient.clear_and_return_all_dirty_indices
             return if dirty_indices.empty?
 
-            dirty_indices.each do |index|
-              EchoCommon::Services::Elasticsearch.delete_index(index)
-              EchoCommon::Services::Elasticsearch.create_index(index)
-            end
-            setup_query_alias
-            EchoCommon::Services::Elasticsearch.client.refresh_indices
+            EchoCommon::Services::Elasticsearch.delete_index_docs(dirty_indices.join(','))
           end
 
           class TestCluster
