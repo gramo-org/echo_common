@@ -5,20 +5,20 @@
         "alternative_isrcs": {
           "properties": {
             "description": {
-              "type": "string"
+              "type": "text"
             },
             "isrc": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "alternative_titles": {
           "properties": {
             "description": {
-              "type": "string"
+              "type": "text"
             },
             "title": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
@@ -26,23 +26,21 @@
           "type": "float"
         },
         "id": {
-          "type": "string"
+          "type": "text"
         },
         "isrc": {
-          "type": "string",
+          "type": "text",
           "fields": {
             "raw": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
         "label_name": {
-          "type": "string",
+          "type": "text",
           "fields": {
             "raw": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
@@ -50,56 +48,54 @@
           "type": "nested",
           "properties": {
             "broadcaster_id": {
-              "type": "string"
+              "type": "text"
             },
             "local_id": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "main_artist": {
-          "type": "string",
+          "type": "text",
           "fields": {
             "raw": {
-              "type": "string",
-              "analyzer": "keyword"
+              "type": "keyword"
             }
           }
         },
         "composers": {
           "properties": {
             "id": {
-              "type": "string"
+              "type": "text"
             },
             "paid_id": {
-              "type": "string"
+              "type": "text"
             },
             "name": {
-              "type": "string",
+              "type": "text",
               "fields": {
                 "raw": {
-                  "type": "string",
-                  "analyzer": "keyword"
+                  "type": "keyword"
                 }
               }
             },
             "alternative_names": {
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "description": {
-                  "type": "string"
+                  "type": "text"
                 }
               }
             }
           }
         },
         "paid_recording_id": {
-          "type": "string"
+          "type": "text"
         },
         "performer_note": {
-          "type": "string"
+          "type": "text"
         },
         "recording_date": {
           "type": "date",
@@ -113,11 +109,10 @@
           "type": "integer"
         },
         "title": {
-          "type": "string",
+          "type": "text",
           "fields": {
             "raw": {
-              "type": "string",
-              "analyzer": "keyword"
+              "type": "keyword"
             }
           }
         },
@@ -125,31 +120,31 @@
           "type": "nested",
           "properties": {
             "isrc": {
-              "type": "string"
+              "type": "text"
             },
             "label_name": {
-              "type": "string"
+              "type": "text"
             },
             "number": {
               "type": "integer"
             },
             "p_line": {
-              "type": "string"
+              "type": "text"
             },
             "release_id": {
-              "type": "string"
+              "type": "text"
             },
             "side": {
               "type": "integer"
             },
             "title": {
-              "type": "string"
+              "type": "text"
             },
             "release_title": {
-              "type": "string"
+              "type": "text"
             },
             "catalog_number": {
-              "type": "string"
+              "type": "text"
             }
           }
         }

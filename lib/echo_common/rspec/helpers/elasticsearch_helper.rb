@@ -9,6 +9,7 @@ module EchoCommon
         class BlockingProxyClient
           @@route = false
           @@blocked = false
+          @@dirty_indices = []
 
           def self.blocked?
             @@blocked
@@ -36,6 +37,12 @@ module EchoCommon
             @target.refresh_indices
           end
 
+          def self.clear_and_return_all_dirty_indices
+            dirty = @@dirty_indices.dup
+            @@dirty_indices.clear
+            dirty.uniq
+          end
+
           def method_missing(method, *args, &block)
             if self.class.blocked?
               fail ArgumentError, %Q(
@@ -57,6 +64,7 @@ module EchoCommon
 
             result = @target.send(method, *args, &block)
             if [:index, :update, :delete, :bulk].include? method
+              @@dirty_indices << args[0][:index]
               force_refresh_indices
             end
             result
@@ -81,41 +89,58 @@ module EchoCommon
 
               around do |example|
                 begin
-                  TestCluster.start
                   BlockingProxyClient.route = true
-                  setup_and_refresh_indices
+                  TestCluster.start(method(:setup_and_refresh_indices))
+                  clear_dirty_indices
                   example.run
                 ensure
-                  teardown_indices
                   BlockingProxyClient.route = false
                 end
               end
             end
           end
 
+          # placeholder hook, overridden in echo
+          def setup_query_alias; end
+
           def setup_and_refresh_indices
+            EchoCommon::Services::Elasticsearch.delete_all_indices
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
+
             EchoCommon::Services::Elasticsearch.create_all_indices
+            setup_query_alias
             EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
-          def teardown_indices
-            EchoCommon::Services::Elasticsearch.delete_all_indices
+          def clear_dirty_indices
+            dirty_indices = BlockingProxyClient.clear_and_return_all_dirty_indices
+            return if dirty_indices.empty?
+
+            dirty_indices.each do |index|
+              EchoCommon::Services::Elasticsearch.delete_index(index)
+              EchoCommon::Services::Elasticsearch.create_index(index)
+            end
+            setup_query_alias
+            EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
           class TestCluster
             @@started = false
 
-            def self.started
+            def self.started(refresh_method)
               @@started ||= !!begin
-                JSON.parse(Net::HTTP.get(URI("http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health")))
+                started = JSON.parse(Net::HTTP.get(URI("http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health")))
+                refresh_method.call
+                started
               rescue
                 nil
               end
             end
 
-            def self.start
-              unless self.started
+            def self.start(refresh_method)
+              unless self.started(refresh_method)
                 Elasticsearch::Extensions::Test::Cluster.start cluster_config
+                refresh_method.call
                 at_exit do
                   TestCluster.stop
                 end
