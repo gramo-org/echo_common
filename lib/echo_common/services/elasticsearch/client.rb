@@ -3,6 +3,11 @@ require 'echo_common/utils/hash'
 require 'echo_common/error'
 require 'hanami/utils/kernel'
 
+# Enable persistent http keep-alive
+# https://github.com/elastic/elasticsearch-ruby/blob/bdf5e145e5acc21726dddcd34492debbbddde568/elasticsearch-transport/README.md
+require 'typhoeus'
+require 'typhoeus/adapters/faraday'
+
 module EchoCommon
   module Services
     class Elasticsearch
