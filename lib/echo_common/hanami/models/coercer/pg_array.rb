@@ -24,12 +24,9 @@ module EchoCommon
           # => EchoCommon::Hanami::Models::Coercer::PGArray::Integer
           #
           def self.for(type)
-            PGArray.const_get("#{type.to_s.capitalize}")
+            PGArray.const_get(const_name(type))
           rescue
-            PGArray.const_set(
-              "#{type.to_s.capitalize}",
-              Class.new(PGArray) { @@type = type }
-            )
+            PGArray.const_set(const_name(type), Class.new(PGArray) { @@type = type })
           end
 
           def self.dump(value)
@@ -38,6 +35,12 @@ module EchoCommon
 
           def self.load(value)
             ::Kernel.Array(value) unless value.nil?
+          end
+
+          # Makes const mapping able to handle values with spaces
+          # e.g. :'timestamp without time zone' => :Timestamp_With_Time_Zone
+          def self.const_name(type)
+            type.to_s.split(' ').map(&:capitalize).join('_')
           end
         end
       end
