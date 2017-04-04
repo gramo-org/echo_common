@@ -27,5 +27,17 @@ describe EchoCommon::Hanami::Models::Coercer::PGArray do
     it "retrurns same class for multiple invocations" do
       expect(described_class.for(:varchar)).to eq(described_class.for(:varchar))
     end
+
+    it 'supports spaces in the type name' do
+      expect(described_class.for(:'timestamp with time zone')).to be(
+        EchoCommon::Hanami::Models::Coercer::PGArray::Timestamp_With_Time_Zone
+      )
+    end
+
+    it 'returns correct type for class' do
+      expect(described_class.for(:varchar).type).to eq(:varchar)
+      expect(described_class.for(:'timestamp with time zone').type).to eq(:'timestamp with time zone')
+      expect(described_class.for(:varchar).type).to eq(:varchar)
+    end
   end
 end
