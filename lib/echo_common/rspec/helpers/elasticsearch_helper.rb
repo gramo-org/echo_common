@@ -18,13 +18,15 @@ module EchoCommon
             @@blocked = true
           end
 
+          def self.with_route
+            @@route = true
+            yield
+          ensure
+            @@route = false
+          end
 
           def self.route
             @@route
-          end
-
-          def self.route=(route)
-            @@route = route
           end
 
           def initialize(target:)
@@ -86,14 +88,16 @@ module EchoCommon
             base.class_eval do
               include ElasticsearchSpecHelper
 
-              around do |example|
-                begin
-                  BlockingProxyClient.route = true
+              before :all do
+                BlockingProxyClient.with_route do
                   setup_and_refresh_indices
+                end
+              end
+
+              around :each do |example|
+                BlockingProxyClient.with_route do
                   clear_dirty_indices
                   example.run
-                ensure
-                  BlockingProxyClient.route = false
                 end
               end
             end
