@@ -1,4 +1,3 @@
-require 'elasticsearch/extensions/test/cluster'
 require 'echo_common/services/elasticsearch'
 
 module EchoCommon
@@ -19,13 +18,15 @@ module EchoCommon
             @@blocked = true
           end
 
+          def self.with_route
+            @@route = true
+            yield
+          ensure
+            @@route = false
+          end
 
           def self.route
             @@route
-          end
-
-          def self.route=(route)
-            @@route = route
           end
 
           def initialize(target:)
@@ -87,14 +88,18 @@ module EchoCommon
             base.class_eval do
               include ElasticsearchSpecHelper
 
-              around do |example|
-                begin
-                  BlockingProxyClient.route = true
-                  TestCluster.start(method(:setup_and_refresh_indices))
+              around :each do |example|
+                unless $indices_setuped
+                  BlockingProxyClient.with_route do
+                    setup_and_refresh_indices
+                  end
+
+                  $indices_setuped = true
+                end
+
+                BlockingProxyClient.with_route do
                   clear_dirty_indices
                   example.run
-                ensure
-                  BlockingProxyClient.route = false
                 end
               end
             end
@@ -122,48 +127,6 @@ module EchoCommon
             end
             setup_query_alias
             EchoCommon::Services::Elasticsearch.client.refresh_indices
-          end
-
-          class TestCluster
-            @@started = false
-
-            def self.started(refresh_method)
-              @@started ||= !!begin
-                started = JSON.parse(Net::HTTP.get(URI("http://#{cluster_config[:network_host]}:#{cluster_config[:port]}/_cluster/health")))
-                refresh_method.call
-                started
-              rescue
-                nil
-              end
-            end
-
-            def self.start(refresh_method)
-              unless self.started(refresh_method)
-                Elasticsearch::Extensions::Test::Cluster.start cluster_config
-                refresh_method.call
-                at_exit do
-                  TestCluster.stop
-                end
-              end
-              @@started = true
-            end
-            def self.stop
-              Elasticsearch::Extensions::Test::Cluster.stop cluster_config
-            end
-
-            def self.config=(config)
-              @@config = config
-            end
-
-            def self.cluster_config
-              {
-                path_logs: File.join(__dir__, "../../tmp" ),
-                nodes: 1,
-                network_host: @@config.fetch(:host),
-                port: @@config.fetch(:port),
-                multicast_enabled: false
-              }
-            end
           end
         end
       end
