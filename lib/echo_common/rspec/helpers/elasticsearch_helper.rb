@@ -88,13 +88,15 @@ module EchoCommon
             base.class_eval do
               include ElasticsearchSpecHelper
 
-              before :all do
-                BlockingProxyClient.with_route do
-                  setup_and_refresh_indices
-                end
-              end
-
               around :each do |example|
+                unless $indices_setuped
+                  BlockingProxyClient.with_route do
+                    setup_and_refresh_indices
+                  end
+
+                  $indices_setuped = true
+                end
+
                 BlockingProxyClient.with_route do
                   clear_dirty_indices
                   example.run
