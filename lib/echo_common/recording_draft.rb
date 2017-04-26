@@ -8,6 +8,7 @@ module EchoCommon
     attributes :composers
     attributes :alternative_isrcs, :alternative_titles
     attributes :tracks
+    attributes :contributors
 
     def initialize(attributes = {})
       super
@@ -16,6 +17,7 @@ module EchoCommon
       self.alternative_titles ||= []
       self.tracks ||= []
       self.composers ||= []
+      self.contributors ||= []
     end
   end
 end
