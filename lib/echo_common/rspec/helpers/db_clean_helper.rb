@@ -9,10 +9,8 @@ module EchoCommon
       module DbCleanHelper
         def self.included(base)
           base.class_eval do
-            let(:disable_db_clean) { false }
-
             around(:each) do |example|
-              if disable_db_clean
+              if example.metadata[:omit_database_transaction]
                 example.run
               else
                 DatabaseCleaner.cleaning do
