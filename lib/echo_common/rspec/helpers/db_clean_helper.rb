@@ -11,15 +11,13 @@ module EchoCommon
           base.class_eval do
             let(:disable_db_clean) { false }
 
-            before do
-              unless disable_db_clean
-                DatabaseCleaner.start
-              end
-            end
-
-            after do
-              unless disable_db_clean
-                DatabaseCleaner.clean
+            around(:each) do |example|
+              if disable_db_clean
+                example.run
+              else
+                DatabaseCleaner.cleaning do
+                  example.run
+                end
               end
             end
           end
