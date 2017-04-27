@@ -6,6 +6,16 @@ module EchoCommon
       module ElasticsearchHelper
         # Block or proxy the calls to client based on configuration
         class BlockingProxyClient
+          KNOWN_CLIENT_METHODS = [
+            :get, :mget, :index, :update, :delete, :bulk, :search, :suggest,
+            :create_index, :create_all_indices, :delete_index,
+            :delete_all_indices, :refresh_indices, :put_alias
+          ].freeze
+
+          METHODS_THAT_REQUIRE_REFRESH = [
+            :search, :suggest
+          ].freeze
+
           @@route = false
           @@blocked = false
           @@dirty_indices = []
@@ -45,6 +55,8 @@ module EchoCommon
           end
 
           def method_missing(method, *args, &block)
+            ensure_expected method
+
             if self.class.blocked?
               fail ArgumentError, %Q(
                 The '#{method}' method on Elasticsearch client was invoked in test context.
@@ -63,8 +75,7 @@ module EchoCommon
               )
             end
 
-            # add methods here if any more methods that require flushing are implemented in client
-            force_refresh_indices if [:search, :suggest].include? method
+            force_refresh_indices if METHODS_THAT_REQUIRE_REFRESH.include? method
 
             @target.send(method, *args, &block).tap do |result|
               is_dirty = [:index, :update, :delete, :bulk].include? method
@@ -72,6 +83,17 @@ module EchoCommon
 
               result
             end
+          end
+
+          def ensure_expected(method)
+            return if KNOWN_CLIENT_METHODS.include? method
+
+            fail ArgumentError, %Q(
+              Unexpected method '#{method}' invoked on client.
+              You need to register the method in `KNOWN_CLIENT_METHODS`.
+              If the method requires a forced refresh before invoking (e.g. :search and :suggest)
+              then you need to register it in `METHODS_THAT_REQUIRE_REFRESH` as well
+            )
           end
         end
 
