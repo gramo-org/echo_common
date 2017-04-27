@@ -63,12 +63,15 @@ module EchoCommon
               )
             end
 
-            result = @target.send(method, *args, &block)
-            if [:index, :update, :delete, :bulk].include? method
-              @@dirty_indices << args[0][:index]
-              force_refresh_indices
+            # add methods here if any more methods that require flushing are implemented in client
+            force_refresh_indices if [:search, :suggest].include? method
+
+            @target.send(method, *args, &block).tap do |result|
+              is_dirty = [:index, :update, :delete, :bulk].include? method
+              @@dirty_indices << args[0][:index] if is_dirty
+
+              result
             end
-            result
           end
         end
 
@@ -86,20 +89,25 @@ module EchoCommon
         module Enable
           def self.included(base)
             base.class_eval do
+              @@indices_setup = false
+
               include ElasticsearchSpecHelper
 
               around :each do |example|
-                unless $indices_setuped
+                unless @@indices_setup
                   BlockingProxyClient.with_route do
                     setup_and_refresh_indices
                   end
 
-                  $indices_setuped = true
+                  @@indices_setup = true
                 end
 
                 BlockingProxyClient.with_route do
-                  clear_dirty_indices
-                  example.run
+                  begin
+                    example.run
+                  ensure
+                    clear_dirty_indices
+                  end
                 end
               end
             end
