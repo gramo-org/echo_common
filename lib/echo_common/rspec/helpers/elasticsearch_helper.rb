@@ -6,6 +6,16 @@ module EchoCommon
       module ElasticsearchHelper
         # Block or proxy the calls to client based on configuration
         class BlockingProxyClient
+          KNOWN_CLIENT_METHODS = [
+            :get, :mget, :index, :update, :delete, :bulk, :search, :suggest,
+            :create_index, :create_all_indices, :delete_index,
+            :delete_all_indices, :refresh_indices, :put_alias
+          ].freeze
+
+          METHODS_THAT_REQUIRE_REFRESH = [
+            :search, :suggest
+          ].freeze
+
           @@route = false
           @@blocked = false
           @@dirty_indices = []
@@ -45,6 +55,8 @@ module EchoCommon
           end
 
           def method_missing(method, *args, &block)
+            ensure_expected method
+
             if self.class.blocked?
               fail ArgumentError, %Q(
                 The '#{method}' method on Elasticsearch client was invoked in test context.
@@ -63,12 +75,25 @@ module EchoCommon
               )
             end
 
-            result = @target.send(method, *args, &block)
-            if [:index, :update, :delete, :bulk].include? method
-              @@dirty_indices << args[0][:index]
-              force_refresh_indices
+            force_refresh_indices if METHODS_THAT_REQUIRE_REFRESH.include? method
+
+            @target.send(method, *args, &block).tap do |result|
+              is_dirty = [:index, :update, :delete, :bulk].include? method
+              @@dirty_indices << args[0][:index] if is_dirty
+
+              result
             end
-            result
+          end
+
+          def ensure_expected(method)
+            return if KNOWN_CLIENT_METHODS.include? method
+
+            fail ArgumentError, %Q(
+              Unexpected method '#{method}' invoked on client.
+              You need to register the method in `KNOWN_CLIENT_METHODS`.
+              If the method requires a forced refresh before invoking (e.g. :search and :suggest)
+              then you need to register it in `METHODS_THAT_REQUIRE_REFRESH` as well
+            )
           end
         end
 
@@ -86,20 +111,25 @@ module EchoCommon
         module Enable
           def self.included(base)
             base.class_eval do
+              @@indices_setup = false
+
               include ElasticsearchSpecHelper
 
               around :each do |example|
-                unless $indices_setuped
+                unless @@indices_setup
                   BlockingProxyClient.with_route do
                     setup_and_refresh_indices
                   end
 
-                  $indices_setuped = true
+                  @@indices_setup = true
                 end
 
                 BlockingProxyClient.with_route do
-                  clear_dirty_indices
-                  example.run
+                  begin
+                    example.run
+                  ensure
+                    clear_dirty_indices
+                  end
                 end
               end
             end
