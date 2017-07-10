@@ -106,7 +106,7 @@
           "format": "strict_date_optional_time||epoch_millis"
         },
         "recorded_in": {
-          "type": "integer"
+          "type": "text"
         },
         "title": {
           "type": "text",
