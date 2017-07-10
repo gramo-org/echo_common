@@ -2,7 +2,7 @@
 module EchoCommon
   class RecordingDraft < EchoCommon::Entity
     attributes :title, :isrc, :duration_in_seconds
-    attributes :recording_date, :release_date, :performer_note, :label_name
+    attributes :recording_date, :release_date, :performer_note, :label_name, :recorded_in
 
     attributes :local_ids, :main_artist
     attributes :composers
