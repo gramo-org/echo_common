@@ -43,7 +43,7 @@ module EchoCommon
 
             define_event_can_method_for name, from: transition_from_states, to: transition_to_state, guard: guard
             define_event_method_for     name, to: transition_to_state
-            define_state_predicate_for  transition_to_state
+            define_state_predicate_for  transition_from_states | [transition_to_state]
           end
 
           private
@@ -100,9 +100,14 @@ module EchoCommon
             end
           end
 
-          def define_state_predicate_for(state_name)
-            define_method("#{state_name}?") do
-              state == state_name
+          def define_state_predicate_for(state_names)
+            state_names.each do |state_name|
+              predicate = "#{state_name}?"
+              next if respond_to? predicate
+              
+              define_method predicate do
+                state == state_name
+              end
             end
           end
         end

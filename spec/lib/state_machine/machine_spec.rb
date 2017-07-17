@@ -2,6 +2,17 @@ require "spec_helper"
 require "echo_common/state_machine/machine"
 
 describe EchoCommon::StateMachine::Machine do
+  class InitialStateSubject
+    include EchoCommon::StateMachine::Machine
+
+    attr_accessor :state
+    event :go, from: "resting", to: "going"
+
+    def initialize(state = "resting")
+      @state = state
+    end
+  end
+  
   class Subject
     include EchoCommon::StateMachine::Machine
 
@@ -34,6 +45,10 @@ describe EchoCommon::StateMachine::Machine do
     event :stop, from: ["running", "walking"], to: "standing"
     event :sit, from: "standing", to: "sitting", guard: :have_chair?
     event :stand, from: "sitting", to: "standing"
+  end
+
+  it "has a predicate for initial state" do
+    expect(InitialStateSubject.new).to be_resting
   end
 
   subject { Subject.new }
