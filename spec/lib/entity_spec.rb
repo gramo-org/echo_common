@@ -102,5 +102,26 @@ module EchoCommon
         expect(AnEntity.new(id: 1).hash).to_not eq AnotherEntity.new(id: 1).hash
       end
     end
+
+    describe 'used as key in a hash' do
+      it 'works as expected' do
+        a = AnEntity.new id: :a
+        a2 = AnEntity.new id: :a
+        b = AnEntity.new id: :b
+        c = AnotherEntity.new id: :a
+        d = AnEntity.new id: nil
+
+        hash = {}
+        hash[a] = :a
+        hash[b] = :b
+        hash[c] = :c
+        hash[d] = :d
+
+        expect(hash[a2]).to eq :a
+        expect(hash[b]).to eq :b
+        expect(hash[c]).to eq :c
+        expect(hash[d]).to eq :d
+      end
+    end
   end
 end
