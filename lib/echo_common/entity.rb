@@ -28,5 +28,11 @@ module EchoCommon
 
       self.class.hash ^ id.hash
     end
+
+    def ==(other)
+      other.object_id == object_id || other.instance_of?(self.class) && !id.nil? && other.id == id
+    end
+
+    alias eql? ==
   end
 end
