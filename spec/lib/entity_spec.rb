@@ -1,8 +1,12 @@
 require 'echo_common/entity'
 
 module EchoCommon
-
   class AnEntity < Entity
+    create_only_attributes :foo
+    create_only_attributes :bar, :zap
+  end
+  
+  class AnotherEntity < Entity
     create_only_attributes :foo
     create_only_attributes :bar, :zap
   end
@@ -47,6 +51,22 @@ module EchoCommon
         it "raieses an error when trying to set an attribute to nil" do
           expect {subject.foo=nil}.not_to raise_error
         end
+      end
+    end
+  end
+
+  describe Entity do
+    describe '#hash' do
+      it 'is the same for a equal class with same id' do
+        expect(AnEntity.new(id: 1).hash).to eq AnEntity.new(id: 1).hash
+      end
+
+      it 'is different for two entities without ID' do
+        expect(AnEntity.new(id: nil).hash).to_not eq AnEntity.new(id: nil).hash
+      end
+
+      it 'is different for different class with same id' do
+        expect(AnEntity.new(id: 1).hash).to_not eq AnotherEntity.new(id: 1).hash
       end
     end
   end
