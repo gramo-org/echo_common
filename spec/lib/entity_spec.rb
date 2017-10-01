@@ -1,8 +1,12 @@
 require 'echo_common/entity'
 
 module EchoCommon
-
   class AnEntity < Entity
+    create_only_attributes :foo
+    create_only_attributes :bar, :zap
+  end
+  
+  class AnotherEntity < Entity
     create_only_attributes :foo
     create_only_attributes :bar, :zap
   end
@@ -47,6 +51,76 @@ module EchoCommon
         it "raieses an error when trying to set an attribute to nil" do
           expect {subject.foo=nil}.not_to raise_error
         end
+      end
+    end
+  end
+
+  describe Entity do
+    describe '#==' do
+      it 'is true for equal class with same id' do
+        expect(AnEntity.new(id: 1)).to eq AnEntity.new(id: 1)
+      end
+
+      it 'is false for two entities without ID' do
+        expect(AnEntity.new(id: nil)).to_not eq AnEntity.new(id: nil)
+      end
+
+      it 'is true for two one without ID' do
+        entity = AnEntity.new(id: nil)
+        expect(entity).to eq entity
+      end
+
+      it 'is false for different class with same id' do
+        expect(AnEntity.new(id: 1)).to_not eq AnotherEntity.new(id: 1)
+      end
+    end
+
+    describe '#eql?' do
+      it 'is true for equal class with same id' do
+        expect(AnEntity.new(id: 1)).to be_eql AnEntity.new(id: 1)
+      end
+
+      it 'is false for two entities without ID' do
+        expect(AnEntity.new(id: nil)).to_not be_eql AnEntity.new(id: nil)
+      end
+
+      it 'is false for different class with same id' do
+        expect(AnEntity.new(id: 1)).to_not be_eql AnotherEntity.new(id: 1)
+      end
+    end
+
+    describe '#hash' do
+      it 'is the same for a equal class with same id' do
+        expect(AnEntity.new(id: 1).hash).to eq AnEntity.new(id: 1).hash
+      end
+
+      it 'is different for two entities without ID' do
+        expect(AnEntity.new(id: nil).hash).to_not eq AnEntity.new(id: nil).hash
+      end
+
+      it 'is different for different class with same id' do
+        expect(AnEntity.new(id: 1).hash).to_not eq AnotherEntity.new(id: 1).hash
+      end
+    end
+
+    describe 'used as key in a hash' do
+      it 'works as expected' do
+        a = AnEntity.new id: :a
+        a2 = AnEntity.new id: :a
+        b = AnEntity.new id: :b
+        c = AnotherEntity.new id: :a
+        d = AnEntity.new id: nil
+
+        hash = {}
+        hash[a] = :a
+        hash[b] = :b
+        hash[c] = :c
+        hash[d] = :d
+
+        expect(hash[a2]).to eq :a
+        expect(hash[b]).to eq :b
+        expect(hash[c]).to eq :c
+        expect(hash[d]).to eq :d
       end
     end
   end
