@@ -13,8 +13,7 @@ describe EchoCommon::Hanami::Controllers::Jwt do
   class JwtControllerTest
     include EchoCommon::Hanami::Controllers::Jwt
 
-    def self.handle_exception(*args)
-    end
+    def self.handle_exception(*args); end
 
     attr_accessor :params
 
@@ -57,10 +56,10 @@ describe EchoCommon::Hanami::Controllers::Jwt do
     expect(subject.jwt.to_h).to eq payload
   end
 
-  it "raises error on ExpiredSignature" do
+  it "handles ExpiredSignature error" do
     payload = { 'data' => { 'foo' => 'bar' }, 'exp' => (Time.now.to_i - 5) }
     expired_token = subject.encode_as_jwt payload
     subject.params.env.merge!('HTTP_AUTHORIZATION' => "Bearer #{expired_token}")
-    expect { subject.jwt }.to raise_error JWT::ExpiredSignature
+    expect(subject.jwt).to eq true
   end
 end
