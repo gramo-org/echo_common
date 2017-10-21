@@ -50,6 +50,11 @@ module EchoCommon
       end
     end
 
+    def key?(key)
+      return true if respond_to? key.to_s.downcase, true
+      @env.key? key.to_s.upcase
+    end
+
     # Returns a new Logger, with given tag and level.
     #
     #   tag     -  The tag name you want logged lines to be tagged with

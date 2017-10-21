@@ -90,6 +90,21 @@ describe "Echo configuration" do
       Thread.current[:echo_request_id] = nil
     end
   end
+  
+  describe "#key?" do
+    it { expect(subject.key?('SMS_FROM')).to eq true }
+    it { expect(subject.key?('sms_from')).to eq true }
+    it { expect(subject.key?(:SMS_FROM)).to eq true }
+    it { expect(subject.key?(:sms_from)).to eq true }
+    
+    it { expect(subject.key?(:logger)).to eq true }
+    it { expect(subject.key?(:LOGGER)).to eq true }
+    it { expect(subject.key?('logger')).to eq true }
+    it { expect(subject.key?('LOGGER')).to eq true }
+    
+    it { expect(subject.key?(:foo)).to eq false }
+    it { expect(subject.key?('BAR')).to eq false }
+  end
 
   describe "getting configuration" do
     it "reads given a symbol" do
@@ -119,5 +134,5 @@ describe "Echo configuration" do
 
       expect(config[:session_timeout_minutes]).to eq 60
     end
-  end
+  end  
 end
