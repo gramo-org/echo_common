@@ -16,7 +16,7 @@ describe EchoCommon::Hanami::Controllers::Authentication do
   subject { AuthenticationControllerTest.new }
 
   let(:user_id) { SecureRandom.uuid }
-  let(:user)    { { 'id' => user_id } }
+  let(:user)    { { 'id' => user_id, 'locale' => 'en' } }
   let(:payload) { { 'data' => { 'authenticated' => true, 'user' => user } } }
 
   describe '#current_user_id' do
@@ -60,6 +60,20 @@ describe EchoCommon::Hanami::Controllers::Authentication do
         .and_raise JWT::ExpiredSignature
 
       expect(subject.send(:authenticated?)).to eq false
+    end
+  end
+
+  describe '#current_user_locale' do
+    it 'gets locale from jwt' do
+      subject.jwt = EchoCommon::Services::Jwt::Token.new [payload]
+
+      expect(subject.send(:current_user_locale)).to eq 'en'
+    end
+
+    it 'is nil if token has expired' do
+      expect(subject).to receive(:jwt)
+        .and_raise JWT::DecodeError.new('Not enough or too many segments')
+      expect(subject.send(:current_user_locale)).to be_nil
     end
   end
 end
