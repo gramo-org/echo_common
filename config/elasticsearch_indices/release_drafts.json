@@ -1,0 +1,90 @@
+{
+  "settings": {
+    "index.mapper.dynamic": false,
+    "number_of_shards" :   1,
+    "number_of_replicas" : 0,
+    "analysis": {
+      "analyzer": {
+        "lowercase_token": {
+          "tokenizer": "keyword",
+          "filter": ["lowercase"],
+          "type": "custom"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "release_draft": {
+      "properties": {
+        "id": {
+          "type": "text"
+        },
+        "external_foreign_key": {
+          "type": "text"
+        },
+        "title": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            },
+            "lowercase_token": {
+              "type":     "text",
+              "analyzer": "lowercase_token"
+            }
+          }
+        },
+        "display_title": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            },
+            "lowercase_token": {
+              "type":     "text",
+              "analyzer": "lowercase_token"
+            }
+          }
+        },
+        "barcode": {
+          "type": "text"
+        },
+        "record_label": {
+          "type": "text",
+          "fields":{
+            "lowercase_token": {
+              "type": "keyword"
+            }
+          }
+        },        
+        "main_artist": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            },
+            "lowercase_token": {
+              "type": "keyword"
+            }
+          }
+        },
+        "release_date": {
+          "type": "date",
+          "format": "strict_date_optional_time||epoch_millis"
+        },
+        "p_line": {
+          "type": "text"
+        },
+        "c_line": {
+          "type": "text"
+        },
+        "catalog_number": {
+          "type": "text"
+        },
+        "source": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
