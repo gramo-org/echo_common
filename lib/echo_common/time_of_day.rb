@@ -1,3 +1,5 @@
+require 'date'
+
 module EchoCommon
   # Value object represents a time of day
   #
@@ -24,10 +26,14 @@ module EchoCommon
       when Time, DateTime
         from_time object
       when String
+        parsed = try_parse_xmlschema object
+        return load parsed if parsed
+
         parts = object.split(':')
 
         if parts.length < 1 || parts.length > 3 || parts.any? { |part| !part.match /\A\d{1,2}\Z/ }
-          fail ArgumentError, "Invalid string given. Must be like HH:MM:SS. MM and SS is optional."
+          fail ArgumentError,
+               "Invalid string ('#{object}') given. Must be like HH:MM:SS. MM and SS is optional."
         end
 
         new *parts.map(&:to_i)
@@ -63,6 +69,12 @@ module EchoCommon
       minute =  seconds / SEC_PER_MINUTE; seconds = seconds % SEC_PER_MINUTE
 
       new hour, minute, seconds
+    end
+
+    def self.try_parse_xmlschema(string)
+      DateTime.xmlschema string
+    rescue ArgumentError
+      nil
     end
 
     # Dumps a time_of_day to string

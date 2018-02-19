@@ -21,6 +21,11 @@ module EchoCommon
         expect(described_class.load("03:04:55")).to eq described_class.new(3, 4, 55)
       end
 
+      it 'loads time with dates, tz ignored' do
+        expect(described_class.load("2016-01-06T03:04:55+01:00")).to eq described_class.new(3, 4, 55)
+        expect(described_class.load("2016-01-06T03:04:55+02:00")).to eq described_class.new(3, 4, 55)
+      end
+
       it "fails on invalid string" do
         expect { described_class.load("a03:00:00") }.to raise_error ArgumentError
         expect { described_class.load("03:00:00:01") }.to raise_error ArgumentError
