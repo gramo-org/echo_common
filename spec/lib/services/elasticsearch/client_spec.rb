@@ -110,6 +110,48 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.search(index: "foo", type: "bar", body: "fizz")
     end
+
+    it 'supports index with ,' do
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_foo,testing_bar",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "foo,bar", type: nil, body: "fizz")
+    end
+
+    it 'supports index with @' do
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_@foo",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "@foo", type: nil, body: "fizz")
+    end
+    
+    it 'supports index with numbers' do
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_foo2",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "foo2", type: nil, body: "fizz")
+    end
+
+    it 'supports index with "*" "," and "-"' do
+      pending
+
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_foo*,-testing_foo5",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "foo*,-foo5", type: nil, body: "fizz")
+    end
   end
 
   describe "#create_index" do

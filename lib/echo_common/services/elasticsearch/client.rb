@@ -76,7 +76,7 @@ module EchoCommon
 
         def search(index:, type: nil, body:)
           response = @client.search(
-            index: with_prefix(index), type: type,
+            index: with_prefix(index, allow_multi_index: true), type: type,
             body: body
           )
           symbolize(response)[:hits]
@@ -124,8 +124,18 @@ module EchoCommon
 
         private
 
-        def with_prefix(index)
-          "#{@index_prefix}#{index}"
+        # We only support multiple indexes listed with , now.
+        # Not all of https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-index.html
+        def with_prefix(index, allow_multi_index: false)
+          return "#{@index_prefix}#{index}" if index.index(',').nil?
+
+          raise ArgumentError, "Index #{index} is not allowed" unless allow_multi_index
+
+          if index =~ /\A[@a-z0-9_*,]+\z/
+            return index.split(',').map { |index_name| with_prefix index_name }.join(',')
+          end
+
+          raise ArgumentError, "Index #{index} is unsupported."
         end
 
         def mapping_files
