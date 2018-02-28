@@ -124,7 +124,7 @@ module EchoCommon
 
         private
 
-        ALLOWED_CHARS_IN_INDEX_NAME = '@a-z_*'.freeze
+        ALLOWED_CHARS_IN_INDEX_NAME = '@a-z0-9_*'.freeze
 
         # We only support multiple indexes listed with , now.
         # Not all of https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-index.html
