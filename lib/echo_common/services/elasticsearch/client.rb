@@ -124,16 +124,14 @@ module EchoCommon
 
         private
 
-        ALLOWED_CHARS_IN_INDEX_NAME = '@a-z0-9_*'.freeze
-
         # We only support multiple indexes listed with , now.
         # Not all of https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-index.html
         def with_prefix(index, allow_multi_index: false)
-          return "#{@index_prefix}#{index}" if index =~ /\A[#{ALLOWED_CHARS_IN_INDEX_NAME}]+\z/
+          return "#{@index_prefix}#{index}" if index.index(',').nil?
 
           raise ArgumentError, "Index #{index} is not allowed" unless allow_multi_index
 
-          if index =~ /\A[#{ALLOWED_CHARS_IN_INDEX_NAME},]+\z/
+          if index =~ /\A[@a-z0-9_*,]+\z/
             return index.split(',').map { |index_name| with_prefix index_name }.join(',')
           end
 
