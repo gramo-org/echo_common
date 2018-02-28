@@ -49,7 +49,7 @@
         "barcode": {
           "type": "text"
         },
-        "record_label": {
+        "label_name": {
           "type": "text",
           "fields":{
             "lowercase_token": {
