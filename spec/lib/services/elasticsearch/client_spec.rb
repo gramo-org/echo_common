@@ -121,6 +121,16 @@ describe EchoCommon::Services::Elasticsearch::Client do
       client.search(index: "foo,bar", type: nil, body: "fizz")
     end
 
+    it 'supports index with @' do
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_@foo",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "@foo", type: nil, body: "fizz")
+    end
+
     it 'supports index with "*" "," and "-"' do
       pending
 
