@@ -120,6 +120,18 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.search(index: "foo,bar", type: nil, body: "fizz")
     end
+
+    it 'supports index with "*" "," and "-"' do
+      pending
+
+      expect(elasticsearch_client).to receive(:search).with(
+        index: "testing_foo*,-testing_foo5",
+        type: nil,
+        body: "fizz"
+      )
+
+      client.search(index: "foo*,-foo5", type: nil, body: "fizz")
+    end
   end
 
   describe "#create_index" do
