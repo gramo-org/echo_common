@@ -23,6 +23,8 @@ module EchoCommon
       def find(id)
         result = service.get id
         entity_class.new result if result
+      rescue Elasticsearch::Transport::Transport::Errors::NotFound
+        nil
       end
 
       def count
