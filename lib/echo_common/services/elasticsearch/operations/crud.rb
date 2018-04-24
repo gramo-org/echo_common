@@ -16,6 +16,7 @@ module EchoCommon
 
         def initialize(response)
           @response = response
+          super "Bulk operation failed: #{response[:errors]}"
         end
       end
 
