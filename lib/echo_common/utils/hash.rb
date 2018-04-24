@@ -37,6 +37,10 @@ module EchoCommon
         _deep_transform_keys_in_object!(self, &block)
       end
 
+      def to_s
+        inspect
+      end
+
 
       private
 
