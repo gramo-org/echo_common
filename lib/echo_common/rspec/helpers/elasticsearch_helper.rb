@@ -65,6 +65,8 @@ module EchoCommon
             end
 
             unless self.class.route
+              return if method == :refresh_indices # allow this, do nothing
+
               fail ArgumentError, %Q(
                 The '#{method}' method on Elasticsearch client was invoked in test context.
                 Make sure that this was intentional, and enable the ElasticsearchSpecHelper:
