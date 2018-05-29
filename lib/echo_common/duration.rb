@@ -3,6 +3,11 @@ module EchoCommon
   # parsing several duration formats. Acts as a float with regards to
   # equality.
   class Duration
+    FACTORS = {
+      'H' => 3600,
+      'M' => 60,
+      'S' => 1
+    }.freeze
 
     # Partialy implements the ISO standard: It only understands the
     # time part (No years, months, or days).
@@ -12,18 +17,11 @@ module EchoCommon
       seconds = 0
       rx = /
         (\d+\.?\d*)
-        ([HMS])
+        ([#{FACTORS.keys.join}])
       /x
       str.scan(rx) do |magnitude, unit|
         magnitude = magnitude.to_f
-        factor = case unit
-                 when 'H'
-                   3600
-                 when 'M'
-                   60
-                 when 'S'
-                   1
-                 end
+        factor = FACTORS.fetch unit
         seconds += magnitude * factor
       end
       seconds
@@ -60,6 +58,31 @@ module EchoCommon
 
     def initialize(seconds)
       @seconds = seconds.to_f
+    end
+
+    # Returns an ISO 8601 representation of the duration.
+    #
+    # NOTE  We currently only represents the duration with hours, minutes and seconds. For
+    #       playtime of recordings it should be enough.
+    #
+    # @return String
+    def to_iso_8601
+      return 'PT0S' if @seconds.zero?
+
+      remainder_sec = @seconds.round # returns int
+      iso_units = {}
+
+      FACTORS.each do |unit, factor|
+        iso_units[unit] = remainder_sec / factor
+        remainder_sec = remainder_sec % factor
+      end
+
+      'PT' + iso_units
+             .reject { |_unit, value| value.zero? } # Don't include zero values
+             .to_a
+             .map(&:reverse) # We want value before unit in our String
+             .flatten
+             .join
     end
 
     def ==(other)

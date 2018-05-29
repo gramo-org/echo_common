@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 require 'echo_common/duration'
 
 def do_test(expectations, against:)
@@ -9,23 +11,24 @@ def do_test(expectations, against:)
 end
 
 module EchoCommon
-  # rubocop:disable Metrics/BlockLength
-  # rubocop:disable Style/ExtraSpacing
   describe Duration do
-    describe "::from_iso_8601" do
-      expectations = [
-        # INPUT     | EXPECTED
-        [nil,         nil],
-        ["",          nil],
-        ["ASFGSD",    nil],
-        ["PT1M1S",     61],
-        ["PT1M",       60],
-        ["PT32S",      32],
-        ["PT1H",     3600],
-        ["PT2H2M2S", 7322],
-      ]
+    @@iso_8601_expectations = [
+      # INPUT     | EXPECTED
+      [nil,         nil],
+      ["",          nil],
+      ["ASFGSD",    nil],
+      ["PT1S",        1],
+      ["PT0S",        0],
+      ["PT1M1S",     61],
+      ["PT1M",       60],
+      ["PT32S",      32],
+      ["PT1H",     3600],
+      ["PT2H2M2S", 7322],
+      ["PT2H2M2S", 7322],
+    ]
 
-      do_test expectations, against: :from_iso_8601
+    describe "::from_iso_8601" do
+      do_test @@iso_8601_expectations, against: :from_iso_8601
     end
 
     describe "::from_hms" do
@@ -55,7 +58,16 @@ module EchoCommon
     end
 
     # ::from_parts implicitly tested by ::from_hms
-
+    
+    describe '#to_iso_8601' do
+      @@iso_8601_expectations.each do |expectation|
+        iso_value, sec = expectation
+        next unless sec.is_a? Integer
+        
+        it { expect(described_class.new(sec).to_iso_8601).to eq iso_value }
+      end
+    end
+    
     describe "#==" do
       context "::new(1)" do
         it do
