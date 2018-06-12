@@ -82,7 +82,7 @@ module EchoCommon
     # format - set this to :compact and all leading zeroes will be removed
     def to_hms(format = nil)
       str = '%02d:%02d:%02d' % units.values
-      str.sub!(/^[0:]{0,4}/, '') if format == :compact
+      str.sub!(/^[0:]+(.*\d)/, '\1') if format == :compact
       str
     end
 

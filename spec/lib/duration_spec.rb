@@ -24,7 +24,6 @@ module EchoCommon
       ["PT32S",      32],
       ["PT1H",     3600],
       ["PT2H2M2S", 7322],
-      ["PT2H2M2S", 7322],
     ]
 
     describe "::from_iso_8601" do
@@ -58,16 +57,55 @@ module EchoCommon
     end
 
     # ::from_parts implicitly tested by ::from_hms
-    
+
+    describe "#to_hms" do
+      context 'format full' do
+        expectations = [
+          # INPUT     | EXPECTED
+          [    0,       '00:00:00'],
+          [    1,       '00:00:01'],
+          [  123,       '00:02:03'],
+          [ 1230,       '00:20:30'],
+          [12301,       '03:25:01'],
+        ]
+
+        expectations.each do |i|
+          it "converts '#{i[0].inspect}' to '#{i[1].inspect}'" do
+            expect(described_class.new(i[0]).to_hms).to eq i[1]
+          end
+        end
+      end
+
+      context 'format compact' do
+        expectations = [
+          # INPUT     | EXPECTED
+          [    0,             '0'],
+          [    1,             '1'],
+          [  123,          '2:03'],
+          [ 1230,         '20:30'],
+          [12301,       '3:25:01'],
+        ]
+
+        expectations.each do |i|
+          it "converts '#{i[0].inspect}' to '#{i[1].inspect}'" do
+            expect(described_class.new(i[0]).to_hms(:compact)).to eq i[1]
+          end
+        end
+      end
+
+    end
+
     describe '#to_iso_8601' do
       @@iso_8601_expectations.each do |expectation|
         iso_value, sec = expectation
         next unless sec.is_a? Integer
-        
-        it { expect(described_class.new(sec).to_iso_8601).to eq iso_value }
+
+        it "converts '#{sec}' to '#{iso_value}'" do
+          expect(described_class.new(sec).to_iso_8601).to eq iso_value
+        end
       end
     end
-    
+
     describe "#==" do
       context "::new(1)" do
         it do
