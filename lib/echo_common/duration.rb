@@ -68,21 +68,22 @@ module EchoCommon
     # @return String
     def to_iso_8601
       return 'PT0S' if @seconds.zero?
-
-      remainder_sec = @seconds.round # returns int
-      iso_units = {}
-
-      FACTORS.each do |unit, factor|
-        iso_units[unit] = remainder_sec / factor
-        remainder_sec = remainder_sec % factor
-      end
-
+      iso_units = units
       'PT' + iso_units
              .reject { |_unit, value| value.zero? } # Don't include zero values
              .to_a
              .map(&:reverse) # We want value before unit in our String
              .flatten
              .join
+    end
+
+    # Returns the duration as HH:MM:SS (zero padded)
+    #
+    # format - set this to :compact and all leading zeroes will be removed
+    def to_hms(format)
+      str = '%02d:%02d:%02d' % units.values
+      str.sub!(/^[0:]{0,4}/, '') if format == :compat
+      str
     end
 
     def ==(other)
@@ -96,5 +97,20 @@ module EchoCommon
     def to_i
       to_f.to_i
     end
+
+    private
+
+    def units
+      remainder_sec = @seconds.round # returns int
+      units = {}
+
+      FACTORS.each do |unit, factor|
+        units[unit] = remainder_sec / factor
+        remainder_sec = remainder_sec % factor
+      end
+
+      units
+    end
+
   end
 end
