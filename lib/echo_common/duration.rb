@@ -80,9 +80,9 @@ module EchoCommon
     # Returns the duration as HH:MM:SS (zero padded)
     #
     # format - set this to :compact and all leading zeroes will be removed
-    def to_hms(format)
+    def to_hms(format = nil)
       str = '%02d:%02d:%02d' % units.values
-      str.sub!(/^[0:]{0,4}/, '') if format == :compat
+      str.sub!(/^[0:]{0,4}/, '') if format == :compact
       str
     end
 
