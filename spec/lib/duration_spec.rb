@@ -14,16 +14,17 @@ module EchoCommon
   describe Duration do
     @@iso_8601_expectations = [
       # INPUT     | EXPECTED
-      [nil,         nil],
-      ["",          nil],
-      ["ASFGSD",    nil],
-      ["PT1S",        1],
-      ["PT0S",        0],
-      ["PT1M1S",     61],
-      ["PT1M",       60],
-      ["PT32S",      32],
-      ["PT1H",     3600],
-      ["PT2H2M2S", 7322],
+      [nil,             nil],
+      ["",              nil],
+      ["ASFGSD",        nil],
+      ["PT1S",           1],
+      ["PT0S",           0],
+      ["PT1M1S",        61],
+      ["PT1M",          60],
+      ["PT32S",         32],
+      ["PT1H",          3600],
+      ["PT2H2M2S",      7322],
+      ["P0DT0H4M4S",    244]
     ]
 
     describe "::from_iso_8601" do

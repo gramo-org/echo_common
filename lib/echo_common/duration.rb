@@ -12,7 +12,7 @@ module EchoCommon
     # Partialy implements the ISO standard: It only understands the
     # time part (No years, months, or days).
     def self.from_iso_8601(str)
-      return if str.nil? || str[0..1] != 'PT'
+      return if str.nil? || str[0] != 'P'
 
       seconds = 0
       rx = /
