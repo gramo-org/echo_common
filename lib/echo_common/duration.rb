@@ -14,6 +14,10 @@ module EchoCommon
     def self.from_iso_8601(str)
       return if str.nil? || str[0] != 'P'
 
+      if str =~ /\AP.*?[1-9]+.*?T/
+        raise ArgumentError, "'#{str}' is not supported as Y, M or D is more than 0."
+      end
+
       seconds = 0
       rx = /
         (\d+\.?\d*)

@@ -24,11 +24,17 @@ module EchoCommon
       ["PT32S",         32],
       ["PT1H",          3600],
       ["PT2H2M2S",      7322],
-      ["P0DT0H4M4S",    244]
+      ["PDT0H4M4S",    244]
     ]
 
     describe "::from_iso_8601" do
       do_test @@iso_8601_expectations, against: :from_iso_8601
+
+      it 'raises error if it encounters any non zero numbers between P and T, as we dont support it' do
+        expect { described_class.from_iso_8601 'P1Y0M0DT0H4M4S' }.to raise_error ArgumentError
+        expect { described_class.from_iso_8601 'P0Y1M0DT0H4M4S' }.to raise_error ArgumentError
+        expect { described_class.from_iso_8601 'P0Y0M1DT0H4M4S' }.to raise_error ArgumentError
+      end
     end
 
     describe "::from_hms" do
@@ -100,6 +106,7 @@ module EchoCommon
       @@iso_8601_expectations.each do |expectation|
         iso_value, sec = expectation
         next unless sec.is_a? Integer
+        next unless iso_value.start_with? 'PT'
 
         it "converts '#{sec}' to '#{iso_value}'" do
           expect(described_class.new(sec).to_iso_8601).to eq iso_value
