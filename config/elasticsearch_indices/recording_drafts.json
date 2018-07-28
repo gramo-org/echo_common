@@ -8,7 +8,12 @@
               "type": "text"
             },
             "isrc": {
-              "type": "text"
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
             }
           }
         },
@@ -144,7 +149,12 @@
               "type": "text"
             },
             "catalog_number": {
-              "type": "text"
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
             }
           }
         }
