@@ -11,7 +11,7 @@ require 'typhoeus/adapters/faraday'
 module EchoCommon
   module Services
     class Elasticsearch
-      class Client
+      class Client # rubocop:disable Metrics/ClassLength
 
         # Initializes a new wrapper client (@see ::Elasticsearch::Client)
         #
@@ -108,12 +108,12 @@ module EchoCommon
           @client.indices.delete index: with_prefix("*")
         end
 
-        # @see ::Elasticsearch::API::Indices::Actions.refresh
+        # @see ::Elasticsearch::API::Indices::Actions#refresh
         def refresh_indices(index = "*")
           @client.indices.refresh index: with_prefix(index)
         end
 
-        # @see ::Elasticsearch::API::Indices::Actions.put_alias
+        # @see ::Elasticsearch::API::Indices::Actions#put_alias
         def put_alias(index:, name:, body: {})
           @client.indices.put_alias(
             index: with_prefix(index),
@@ -122,11 +122,30 @@ module EchoCommon
           )
         end
 
+        # @see ::Elasticsearch::API::Indices::Actions#put_mapping
+        def put_mapping(index:, type:, body: {})
+          @client.indices.put_mapping(
+            index: with_prefix(index),
+            type: type,
+            body: body
+          )
+        end
+
+        # @see ::Elasticsearch::API::Actions#update_by_query
+        def update_by_query(index:, wait_for_completion: true)
+          @client.update_by_query(
+            index: with_prefix(index),
+            wait_for_completion: wait_for_completion
+          )
+        end
+
         private
 
         # We only support multiple indexes listed with , now.
         # Not all of https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-index.html
+        # When index is an Array, adds prefix to each element
         def with_prefix(index, allow_multi_index: false)
+          return index.map(&method(:with_prefix)) if index.is_a?(Array)
           return "#{@index_prefix}#{index}" if index.index(',').nil?
 
           raise ArgumentError, "Index #{index} is not allowed" unless allow_multi_index
