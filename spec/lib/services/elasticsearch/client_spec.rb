@@ -228,14 +228,56 @@ describe EchoCommon::Services::Elasticsearch::Client do
   end
 
   describe "#put_alias" do
-    it "refresh_indices" do
+    it "creates or updates single index alias" do
       expect(elasticsearch_client.indices).to receive(:put_alias).with(
         index: "testing_foo",
         name: "testing_bar",
-        body: {baz: "biz"}
+        body: { baz: "biz" }
       )
 
-      client.put_alias(index: "foo", name: "bar", body: {baz: "biz"})
+      client.put_alias(index: "foo", name: "bar", body: { baz: "biz" })
+    end
+  end
+
+  describe "#put_mapping" do
+    it "creates or updates mapping of index" do
+      expect(elasticsearch_client.indices).to receive(:put_mapping).with(
+        index: "testing_recordings",
+        type: "recording",
+        body: { baz: "biz" }
+      )
+
+      client.put_mapping(index: "recordings", type: "recording", body: { baz: "biz"})
+    end
+
+    it "creates or updates mapping of multiple indices" do
+      expect(elasticsearch_client.indices).to receive(:put_mapping).with(
+        index: ["testing_recordings", "testing_recording_drafts"],
+        type: "recording",
+        body: { baz: "biz" }
+      )
+
+      client.put_mapping(
+        index: ["recordings", "recording_drafts"],
+        type: "recording",
+        body: { baz: "biz"}
+      )
+    end
+  end
+
+  describe "#update_by_query" do
+    it "process every document matching a query, potentially updating it" do
+      expect(elasticsearch_client).to receive(:update_by_query).with(
+        index: "testing_recordings",
+        wait_for_completion: true
+      )
+      client.update_by_query(index: "recordings")
+
+      expect(elasticsearch_client).to receive(:update_by_query).with(
+        index: ["testing_recordings", "testing_recording_drafts"],
+        wait_for_completion: true
+      )
+      client.update_by_query(index: ["recordings", "recording_drafts"])
     end
   end
 
