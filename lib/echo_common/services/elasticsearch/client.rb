@@ -139,6 +139,10 @@ module EchoCommon
           )
         end
 
+        def list_tasks(task_id: nil)
+          symbolize @client.tasks.list(task_id: task_id)
+        end
+
         private
 
         # We only support multiple indexes listed with , now.
