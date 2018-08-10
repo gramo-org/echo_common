@@ -133,7 +133,7 @@ module EchoCommon
 
         # @see ::Elasticsearch::API::Actions#update_by_query
         def update_by_query(index:, wait_for_completion: true)
-          @client.update_by_query(
+          symbolize @client.update_by_query(
             index: with_prefix(index),
             wait_for_completion: wait_for_completion
           )
