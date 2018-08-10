@@ -17,7 +17,8 @@ describe EchoCommon::Services::Elasticsearch::Client do
   end
 
   let(:client_class) { double }
-  let(:elasticsearch_client) { double indices: double }
+  let(:elasticsearch_client) { double indices: double, tasks: tasks_client }
+  let(:tasks_client) { double }
   let(:client) do
     described_class.new **config, client_class: client_class
   end
@@ -130,7 +131,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.search(index: "@foo", type: nil, body: "fizz")
     end
-    
+
     it 'supports index with numbers' do
       expect(elasticsearch_client).to receive(:search).with(
         index: "testing_foo2",
@@ -278,6 +279,16 @@ describe EchoCommon::Services::Elasticsearch::Client do
         wait_for_completion: true
       )
       client.update_by_query(index: ["recordings", "recording_drafts"])
+    end
+  end
+
+  describe "#list_tasks" do
+    it "lists tasks" do
+      expect(tasks_client).to receive(:list).with(
+        task_id: 'foo'
+      )
+
+      client.list_tasks(task_id: 'foo')
     end
   end
 
