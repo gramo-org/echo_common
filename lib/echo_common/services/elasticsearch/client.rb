@@ -53,9 +53,11 @@ module EchoCommon
           symbolize @client.index(index: with_prefix(index), type: type, id: id, body: body)
         end
 
-        def update(index:, type:, id:, body:)
+        # @param retry_on_conflict - by default Elastic sets this value to 0.
+        def update(index:, type:, id:, body:, retry_on_conflict: 0)
           symbolize @client.update(
             index: with_prefix(index), type: type, id: id,
+            retry_on_conflict: retry_on_conflict,
             body: body
           )
         end
