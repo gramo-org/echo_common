@@ -70,6 +70,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
         index: "testing_foo",
         type: "bar",
         id: "baz",
+        retry_on_conflict: 0,
         body: "fizz"
       )
 
