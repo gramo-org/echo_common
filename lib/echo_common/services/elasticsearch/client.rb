@@ -41,53 +41,52 @@ module EchoCommon
           @client = client_class.new config
         end
 
-        def get(index:, type:, id:)
-          symbolize @client.get(index: with_prefix(index), type: type, id: id)
+        def get(index:, **options)
+          symbolize @client.get(index: with_prefix(index), **options)
         end
 
-        def mget(index:, type:, body:)
-          symbolize @client.mget(index: with_prefix(index), type: type, body: body)
+        def mget(index:, **options)
+          symbolize @client.mget(index: with_prefix(index), **options)
         end
 
-        def index(index:, type:, id:, body:)
-          symbolize @client.index(index: with_prefix(index), type: type, id: id, body: body)
+        def index(index:, **options)
+          symbolize @client.index(index: with_prefix(index), **options)
         end
 
         # @param retry_on_conflict - by default Elastic sets this value to 0.
-        def update(index:, type:, id:, body:, retry_on_conflict: 0)
+        def update(index:, retry_on_conflict: 0, **options)
           symbolize @client.update(
-            index: with_prefix(index), type: type, id: id,
+            index: with_prefix(index),
             retry_on_conflict: retry_on_conflict,
-            body: body
+            **options
           )
         end
 
-        def delete(index:, type:, id:)
+        def delete(index:, **options)
           symbolize @client.delete(
-            index: with_prefix(index), type: type,
-            id: id
+            index: with_prefix(index),
+            **options
           )
         end
 
-        def bulk(index:, type:, body:)
+        def bulk(index:, **options)
           symbolize @client.bulk(
-            index: with_prefix(index), type: type,
-            body: body
+            index: with_prefix(index),
+            **options
           )
         end
 
-        def search(index:, type: nil, body:)
+        def search(index:, **options)
           response = @client.search(
-            index: with_prefix(index, allow_multi_index: true), type: type,
-            body: body
+            index: with_prefix(index, allow_multi_index: true), **options
           )
           symbolize(response)[:hits]
         end
 
-        def suggest(index:, body:)
+        def suggest(index:, **options)
           symbolize @client.suggest(
             index: with_prefix(index),
-            body: body
+            **options
           )
         end
 
