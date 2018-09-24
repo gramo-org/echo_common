@@ -111,38 +111,43 @@ module EchoCommon
         end
 
         # @see ::Elasticsearch::API::Indices::Actions#refresh
-        def refresh_indices(index = "*")
-          @client.indices.refresh index: with_prefix(index)
+        def refresh_indices(index = "*", **options)
+          @client.indices.refresh(
+            index: with_prefix(index),
+            **options
+          )
         end
 
         # @see ::Elasticsearch::API::Indices::Actions#put_alias
-        def put_alias(index:, name:, body: {})
+        def put_alias(index:, name:, body: {}, **options)
           @client.indices.put_alias(
             index: with_prefix(index),
             name: with_prefix(name),
-            body: body
+            body: body,
+            **options
           )
         end
 
         # @see ::Elasticsearch::API::Indices::Actions#put_mapping
-        def put_mapping(index:, type:, body: {})
+        def put_mapping(index:, body: {}, **options)
           @client.indices.put_mapping(
             index: with_prefix(index),
-            type: type,
-            body: body
+            body: body,
+            **options
           )
         end
 
         # @see ::Elasticsearch::API::Actions#update_by_query
-        def update_by_query(index:, wait_for_completion: true)
+        def update_by_query(index:, wait_for_completion: true, **options)
           symbolize @client.update_by_query(
             index: with_prefix(index),
-            wait_for_completion: wait_for_completion
+            wait_for_completion: wait_for_completion,
+            **options
           )
         end
 
-        def list_tasks(task_id: nil)
-          symbolize @client.tasks.list(task_id: task_id)
+        def list_tasks(**options)
+          symbolize @client.tasks.list(**options)
         end
 
         private
