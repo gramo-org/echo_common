@@ -16,7 +16,7 @@ module EchoCommon
 
         def initialize(response)
           @response = response
-          errors = response[:items].find_all { |i| i[:index].key? :error }
+          errors = response[:items].find_all { |i| i[:index]&.key?(:error) }
           errors = response if errors.empty?
           super "Bulk operation failed: #{errors}"
         end
