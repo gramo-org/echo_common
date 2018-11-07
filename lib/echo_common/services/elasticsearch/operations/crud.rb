@@ -101,10 +101,11 @@ module EchoCommon
           end
 
           # Wraps elasticsearch client 'bulk' method and returns the result
-          def bulk(data)
+          def bulk(data, **options)
             response = @client.bulk(
               index: @index, type: @type,
-              body: data
+              body: data,
+              **options
             )
 
             if response[:errors]
