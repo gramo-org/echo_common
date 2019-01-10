@@ -71,7 +71,7 @@ module EchoCommon
                 The '#{method}' method on Elasticsearch client was invoked in test context.
                 Make sure that this was intentional, and enable the ElasticsearchSpecHelper:
 
-                describe "something", enable_elastic_search: true do
+                describe "something", enable_elasticsearch: true do
                   expect(the_inquisition).to be(:spanish)
                 end
               )
