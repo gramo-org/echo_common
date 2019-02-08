@@ -158,7 +158,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
   end
 
   describe "#create_index" do
-    fit "creates index based on mapping files" do
+    it "creates index based on mapping files" do
       expect(File).to receive(:read).and_return("fizz: <%= @number_of_replicas %>")
       expect(client).to receive(:mapping_files).and_return(["foo/bar/recordings.json.erb"])
       expect(elasticsearch_client.indices).to receive(:create).with(
