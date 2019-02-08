@@ -37,6 +37,7 @@ module EchoCommon
         def initialize(client_class: ::Elasticsearch::Client, **config)
           @indices_mapping_globs = ::Hanami::Utils::Kernel.Array(config.delete(:indices_mapping_glob))
           @index_prefix         = config.delete(:index_prefix)
+          @number_of_replicas = config.delete(:number_of_replicas)
 
           @client = client_class.new config
         end
@@ -181,7 +182,7 @@ module EchoCommon
         end
 
         def mapping_file_name(prefixed_index)
-          prefixed_index.sub(@index_prefix, '') + '.json'
+          prefixed_index.sub(@index_prefix, '') + '.json.erb'
         end
 
         def indices_mapping_globs
@@ -189,8 +190,11 @@ module EchoCommon
         end
 
         def create_index_from_file(file_name)
-          index_definition = File.read(file_name)
-          index_name = file_name[/(\w*)\.json/, 1]
+          index_definition_template = File.read(file_name)
+          renderer = ERB.new(index_definition_template)
+          data = Struct.new(:number_of_replicas).new(@number_of_replicas)
+          index_definition = renderer.result(data.send(:binding))
+          index_name = file_name[/(\w*)\.json\.erb/, 1]
 
           @client.indices.create(
             index: with_prefix(index_name),
