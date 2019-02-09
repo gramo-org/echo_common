@@ -12,7 +12,8 @@ describe EchoCommon::Services::Elasticsearch::Client do
         user: "",
         password: "",
         scheme: "http",
-      }]
+      }],
+      number_of_replicas: 1,
     }
   end
 
@@ -158,11 +159,11 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
   describe "#create_index" do
     it "creates index based on mapping files" do
-      expect(File).to receive(:read).and_return("fizz")
-      expect(client).to receive(:mapping_files).and_return(["foo/bar/recordings.json"])
+      expect(File).to receive(:read).and_return("fizz: <%= @number_of_replicas %>")
+      expect(client).to receive(:mapping_files).and_return(["foo/bar/recordings.json.erb"])
       expect(elasticsearch_client.indices).to receive(:create).with(
         index: "testing_recordings",
-        body: "fizz"
+        body: "fizz: 1"
       )
 
       client.create_index("recordings")
@@ -170,7 +171,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
     it "fails indices_mapping_globs results in multiple files for the same index" do
       allow(Dir).to receive(:glob) { |pass_through| pass_through }
-      allow(File).to receive(:read).and_return("fizz")
+      allow(File).to receive(:read).and_return("fizz: <%= @number_of_replicas %>")
       expect(client).to receive(:indices_mapping_globs).and_return(['/a/recordings.json', '/b/recordings.json'])
 
       expect {
@@ -181,13 +182,13 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
   describe "#create_all_indices" do
     it "creates all indices" do
-      expect(File).to receive(:read).and_return("fizz")
-      expect(client).to receive(:mapping_files).and_return(["foo/bar/recordings.json"])
-      expect(client).to receive(:create_index_from_file).with("foo/bar/recordings.json").and_call_original
+      expect(File).to receive(:read).and_return("fizz: <%= @number_of_replicas %>")
+      expect(client).to receive(:mapping_files).and_return(["foo/bar/recordings.json.erb"])
+      expect(client).to receive(:create_index_from_file).with("foo/bar/recordings.json.erb").and_call_original
 
       expect(elasticsearch_client.indices).to receive(:create).with(
         index: "testing_recordings",
-        body: "fizz"
+        body: "fizz: 1"
       )
 
       client.create_all_indices
