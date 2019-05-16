@@ -5,7 +5,7 @@ module EchoCommon
     attributes :title, :display_title, :main_artist
 
     attributes :label_name, :c_line, :p_line
-    attributes :release_date
+    attributes :release_date, :release_year
 
     attributes :barcode, :catalog_number
 
