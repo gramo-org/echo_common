@@ -52,6 +52,9 @@
         "label_name": {
           "type": "text",
           "fields":{
+            "raw": {
+              "type": "keyword"
+            },
             "lowercase_token": {
               "type": "keyword"
             }
@@ -79,7 +82,12 @@
           "type": "text"
         },
         "catalog_number": {
-          "type": "text"
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
         },
         "source": {
           "type": "text"
