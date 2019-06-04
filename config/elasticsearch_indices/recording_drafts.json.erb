@@ -1,4 +1,18 @@
 {
+  "settings": {
+    "analysis": {
+      "normalizer": {
+        "custom_sort_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": [
+            "lowercase",
+            "asciifolding"
+           ]
+        }
+      }
+    }
+  },
   "mappings": {
     "recording_draft": {
       "properties": {
@@ -37,7 +51,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             }
           }
         },
@@ -45,7 +60,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             }
           }
         },
@@ -64,7 +80,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             }
           }
         },
@@ -120,7 +137,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             }
           }
         },
@@ -155,7 +173,8 @@
               "type": "text",
               "fields": {
                 "raw": {
-                  "type": "keyword"
+                  "type": "keyword",
+                  "normalizer": "custom_sort_normalizer"
                 }
               }
             }
