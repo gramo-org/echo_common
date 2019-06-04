@@ -10,6 +10,16 @@
           "filter": ["lowercase"],
           "type": "custom"
         }
+      },
+      "normalizer": {
+        "custom_sort_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": [
+            "lowercase",
+            "asciifolding"
+           ]
+        }
       }
     }
   },
@@ -26,7 +36,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             },
             "lowercase_token": {
               "type":     "text",
@@ -53,7 +64,8 @@
           "type": "text",
           "fields":{
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             },
             "lowercase_token": {
               "type": "keyword"
@@ -64,7 +76,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             },
             "lowercase_token": {
               "type": "keyword"
@@ -85,7 +98,8 @@
           "type": "text",
           "fields": {
             "raw": {
-              "type": "keyword"
+              "type": "keyword",
+              "normalizer": "custom_sort_normalizer"
             }
           }
         },
