@@ -26,7 +26,7 @@ module EchoCommon
             # => EchoCommon::Hanami::Models::Coercer::PGArray::Integer
             #
             def for(type)
-              PGArray.const_get(const_name(type))
+              PGArray.const_get(const_name(type), false)
             rescue
               PGArray.const_set(const_name(type), Class.new(PGArray) { @type = type })
             end
