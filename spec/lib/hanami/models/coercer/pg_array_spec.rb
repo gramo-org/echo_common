@@ -28,6 +28,11 @@ describe EchoCommon::Hanami::Models::Coercer::PGArray do
       expect(described_class.for(:varchar)).to eq(described_class.for(:varchar))
     end
 
+    it 'supports date' do
+      typed_coercer = described_class.for(:date)
+      expect(typed_coercer).to be < EchoCommon::Hanami::Models::Coercer::PGArray
+    end
+
     it 'supports spaces in the type name' do
       expect(described_class.for(:'timestamp with time zone')).to be(
         EchoCommon::Hanami::Models::Coercer::PGArray::Timestamp_With_Time_Zone
