@@ -9,6 +9,10 @@
           "tokenizer": "keyword",
           "filter": ["lowercase"],
           "type": "custom"
+        },
+        "unify_apostrophes_analyzer": {
+          "tokenizer": "standard",
+          "char_filter": ["unify_apostrophes"]
         }
       },
       "normalizer": {
@@ -20,11 +24,21 @@
             "asciifolding"
            ]
         }
+      },
+      "char_filter": {
+        "unify_apostrophes": {
+          "type": "pattern_replace",
+          "pattern": "[`´]",
+          "replacement": "'"
+        }
       }
     }
   },
   "mappings": {
     "release_draft": {
+      "_all": {
+        "analyzer": "unify_apostrophes_analyzer"
+      },
       "properties": {
         "id": {
           "type": "text"
@@ -34,6 +48,7 @@
         },
         "title": {
           "type": "text",
+          "analyzer": "unify_apostrophes_analyzer",
           "fields": {
             "raw": {
               "type": "keyword",
@@ -62,6 +77,7 @@
         },
         "label_name": {
           "type": "text",
+          "analyzer": "unify_apostrophes_analyzer",
           "fields":{
             "raw": {
               "type": "keyword",
@@ -74,6 +90,7 @@
         },        
         "main_artist": {
           "type": "text",
+          "analyzer": "unify_apostrophes_analyzer",
           "fields": {
             "raw": {
               "type": "keyword",
