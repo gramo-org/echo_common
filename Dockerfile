@@ -1,5 +1,4 @@
-FROM ruby:2.3.3
-
+FROM ruby:2.6.5-stretch
 
 ### DEPENDENCIES ###
 
