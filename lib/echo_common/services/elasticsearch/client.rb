@@ -81,6 +81,7 @@ module EchoCommon
           response = @client.search(
             index: with_prefix(index, allow_multi_index: true), **options
           )
+          binding.pry
           symbolize(response)[:hits]
         end
 
