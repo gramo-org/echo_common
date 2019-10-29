@@ -79,7 +79,7 @@ module EchoCommon
 
         def search(index:, **options)
           response = @client.search(
-            index: with_prefix(index, allow_multi_index: true), **options
+            index: with_prefix('recordings', allow_multi_index: true), **options
           )
           binding.pry
           symbolize(response)[:hits]
