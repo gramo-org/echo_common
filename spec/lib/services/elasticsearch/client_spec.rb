@@ -155,6 +155,25 @@ describe EchoCommon::Services::Elasticsearch::Client do
 
       client.search(index: "foo*,-foo5", type: nil, body: "fizz")
     end
+
+    it 'raising the error when shards failures are found' do
+      allow(elasticsearch_client).to receive(:search).with(
+        index: 'testing_some_alias',
+        type: nil,
+        body: 'fizz'
+      ).and_return(
+        {
+          '_shards' => {
+            'failures' => {
+              'reason': 'some failure reason'
+            }
+          }
+        }
+      )
+
+      expect { client.search(index: "some_alias", type: nil, body: "fizz") }
+        .to raise_error(an_instance_of(EchoCommon::Error))
+    end
   end
 
   describe "#create_index" do
