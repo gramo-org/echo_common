@@ -78,10 +78,9 @@ module EchoCommon
         end
 
         def search(index:, **options)
-          response = @client.search(
-            index: with_prefix('recordings', allow_multi_index: true), **options
-          )
-          binding.pry
+          response = @client.search(index: with_prefix(index, allow_multi_index: true), **options)
+          raise EchoCommon::Error, response['_shards']['failures'] if response && response['_shards']['failures']
+
           symbolize(response)[:hits]
         end
 
