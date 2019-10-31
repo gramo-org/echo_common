@@ -172,7 +172,7 @@ describe EchoCommon::Services::Elasticsearch::Client do
       )
 
       expect { client.search(index: "some_alias", type: nil, body: "fizz") }
-        .to raise_error(an_instance_of(EchoCommon::Error))
+        .to raise_error(an_instance_of(EchoCommon::Services::Elasticsearch::Client::IndexShardsError))
     end
   end
 

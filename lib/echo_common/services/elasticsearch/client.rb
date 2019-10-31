@@ -12,7 +12,7 @@ module EchoCommon
   module Services
     class Elasticsearch
       class Client # rubocop:disable Metrics/ClassLength
-
+        class IndexShardsError < ::EchoCommon::Error; end
         # Initializes a new wrapper client (@see ::Elasticsearch::Client)
         #
         # logger - the logger to configure on the underlying ::Elasticsearch::Client
@@ -79,7 +79,7 @@ module EchoCommon
 
         def search(index:, **options)
           response = @client.search(index: with_prefix(index, allow_multi_index: true), **options)
-          raise EchoCommon::Error, response['_shards']['failures'] if response && response['_shards']['failures']
+          raise IndexShardsError, response['_shards']['failures'] if response && response['_shards']['failures']
 
           symbolize(response)[:hits]
         end
