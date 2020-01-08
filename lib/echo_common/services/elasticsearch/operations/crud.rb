@@ -77,26 +77,20 @@ module EchoCommon
           #     "_version" : 1,
           #     "created" : true
           #   }
-          def index(doc)
-            dup_doc = doc.dup
-            id = dup_doc.delete :id
-
+          def index(id: nil, **doc)
             @client.index(
               index: @index, type: @type, id: id,
-              body: dup_doc
+              body: doc
             )
           end
 
           # Wraps elasticsearch client 'update' method and returns the result
           # Note: this method is implemented as partial update in the client, any
           # nil values in doc will likely clear values in elasticsearch document
-          def update(doc)
-            dup_doc = doc.dup
-            id = dup_doc.delete :id
-
+          def update(id:, **doc)
             @client.update(
               index: @index, type: @type, id: id,
-              body: { doc: dup_doc }
+              body: { doc: doc }
             )
           end
 
