@@ -4,8 +4,57 @@ describe EchoCommon::Services::Elasticsearch do
 
   let(:client) { double }
 
+  let(:index) { 'cars' }
+  let(:type) { 'car' }
+
   let(:subject) do
-    described_class.new client: client
+    described_class.new client: client, index: index, type: type
+  end
+
+  describe '#index' do
+    it 'passes on data to the client' do
+      expect(client).to receive(:index).with(
+        index: index, type: type,
+        id: nil,
+        body: { some: :data }
+      )
+
+      subject.index some: :data
+    end
+
+    it 'can assign id' do
+      expect(client).to receive(:index).with(hash_including(id: 'my-id'))
+      subject.index id: 'my-id', some: :data
+    end
+
+    it 'does not pass id within body / document data to be indexed' do
+      expect(client).to receive(:index).with(hash_including(body: { some: :data }))
+      subject.index id: 'my-id', some: :data
+    end
+
+    it 'does not mutate given doc' do
+      allow(client).to receive(:index)
+      doc = { id: 'my-id', some: :data }
+      expect { subject.index doc }.to_not change { doc[:id] }
+    end
+  end
+
+  describe '#update' do
+    it 'passes on data to the client' do
+      expect(client).to receive(:update).with(
+        index: index, type: type,
+        id: 'my-id',
+        body: { doc: { some: :data } }
+      )
+
+      subject.update id: 'my-id', some: :data
+    end
+
+    it 'does not mutate given doc' do
+      allow(client).to receive(:update)
+      doc = { id: 'my-id', some: :data }
+      expect { subject.update doc }.to_not change { doc[:id] }
+    end
   end
 
   describe "#bulk" do
