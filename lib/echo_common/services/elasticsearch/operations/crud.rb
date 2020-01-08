@@ -62,6 +62,8 @@ module EchoCommon
 
           # Wraps elasticsearch client 'index' method, and returns the result
           #
+          # If id in doc is omitted Elasticsearch will assign one for you.
+          #
           # Example client response:
           #   {
           #     "_shards" : {
@@ -75,10 +77,13 @@ module EchoCommon
           #     "_version" : 1,
           #     "created" : true
           #   }
-          def index(data)
+          def index(doc)
+            dup_doc = doc.dup
+            id = dup_doc.delete :id
+
             @client.index(
-              index: @index, type: @type, id: data[:id],
-              body: data
+              index: @index, type: @type, id: id,
+              body: dup_doc
             )
           end
 
@@ -86,9 +91,12 @@ module EchoCommon
           # Note: this method is implemented as partial update in the client, any
           # nil values in doc will likely clear values in elasticsearch document
           def update(doc)
+            dup_doc = doc.dup
+            id = dup_doc.delete :id
+
             @client.update(
-              index: @index, type: @type, id: doc[:id],
-              body: { doc: doc }
+              index: @index, type: @type, id: id,
+              body: { doc: dup_doc }
             )
           end
 
