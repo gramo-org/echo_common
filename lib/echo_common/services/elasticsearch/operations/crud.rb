@@ -1,5 +1,7 @@
 require 'echo_common/error'
 
+require_relative 'merge_in_id'
+
 module EchoCommon
   module Services
     class Elasticsearch
@@ -24,6 +26,8 @@ module EchoCommon
 
       module Operations
         module Crud
+          include MergeInId
+
           # Wraps elasticsearch client 'get' method, and returns the _source
           # if document is found, or nil if not.
           #
@@ -42,9 +46,8 @@ module EchoCommon
           #   }
           def get(id)
             result = @client.get index: @index, type: @type, id: id
-            if (result[:found])
-              result[:_source]
-            end
+
+            merge_id_into_source_and_return_source result if result[:found]
           end
 
           # Wraps elasticsearch client 'mget' method.
@@ -57,7 +60,8 @@ module EchoCommon
               result[:docs].find_all { |doc| !doc[:found] }.map { |doc| doc[:_id] }
             raise MgetMissingIDsError,
                   MgetMissingIDsError.to_message(missing_ids) unless missing_ids.empty?
-            result[:docs].map { |doc| doc[:_source] }
+
+            result[:docs].map { |doc| merge_id_into_source_and_return_source doc }
           end
 
           # Wraps elasticsearch client 'index' method, and returns the result
@@ -77,26 +81,20 @@ module EchoCommon
           #     "_version" : 1,
           #     "created" : true
           #   }
-          def index(doc)
-            dup_doc = doc.dup
-            id = dup_doc.delete :id
-
+          def index(id: nil, **doc)
             @client.index(
               index: @index, type: @type, id: id,
-              body: dup_doc
+              body: doc
             )
           end
 
           # Wraps elasticsearch client 'update' method and returns the result
           # Note: this method is implemented as partial update in the client, any
           # nil values in doc will likely clear values in elasticsearch document
-          def update(doc)
-            dup_doc = doc.dup
-            id = dup_doc.delete :id
-
+          def update(id:, **doc)
             @client.update(
               index: @index, type: @type, id: id,
-              body: { doc: dup_doc }
+              body: { doc: doc }
             )
           end
 

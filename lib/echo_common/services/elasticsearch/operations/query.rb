@@ -1,8 +1,12 @@
+require_relative 'merge_in_id'
+
 module EchoCommon
   module Services
     class Elasticsearch
       module Operations
         module Query
+          include MergeInId
+
           # Wraps elasticsearch client 'search' method and returns the hits property
           # of the result.
           #
@@ -18,10 +22,17 @@ module EchoCommon
           #    }
           #  }
           def search(query_body)
-            @client.search(
+            result = @client.search(
               index: @query_index,
               body: query_body
             )
+
+            result[:hits].map! do |hit|
+              hit[:_source] = merge_id_into_source_and_return_source hit
+              hit
+            end
+
+            result
           end
 
           # Wraps elasticsearch client 'suggest' method and returns the response from the client
