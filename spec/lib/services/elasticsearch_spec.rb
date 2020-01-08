@@ -57,6 +57,75 @@ describe EchoCommon::Services::Elasticsearch do
     end
   end
 
+  describe '#get' do
+    it 'returns nil when not found' do
+      expect(client).to receive(:get).with(id: 'my-id', index: index, type: type).and_return(
+        found: false
+      )
+
+      expect(subject.get 'my-id').to be_nil
+    end
+
+    it 'returns doc when found' do
+      expect(client).to receive(:get).with(id: 'my-id', index: index, type: type).and_return(
+        found: true,
+        _id: 'my-id',
+        _source: {
+          some: 'data'
+        }
+      )
+
+      expect(subject.get 'my-id').to eq(
+        id: 'my-id',
+        some: 'data'
+      )
+    end
+  end
+
+  describe '#mget' do
+    it 'returns array of found ids' do
+      expect(client).to receive(:mget).with(body: { ids: ['my-id'] }, index: index, type: type).and_return(
+        docs: [
+          {
+            found: true,
+            _id: 'my-id',
+            _source: {
+              some: 'data'
+            }
+          }
+        ]
+
+      )
+
+      expect(subject.mget(['my-id'])).to eq [
+        { id: 'my-id', some: 'data' }
+      ]
+    end
+  end
+
+  describe '#search' do
+    it 'merges id in to hits' do
+      expect(client).to receive(:search).with(body: 'query', index: index).and_return(
+        hits: [
+          _id: 'my-id',
+          _source: {
+            some: 'data'
+          }
+        ]
+      )
+
+      expect(subject.search 'query').to eq(
+        hits: [
+          _id: 'my-id',
+          _source: {
+            id: 'my-id',
+            some: 'data'
+          }
+        ]
+      )
+    end
+  end
+
   describe "#bulk" do
     let(:response_with_errors) do
       { :took=>1,
