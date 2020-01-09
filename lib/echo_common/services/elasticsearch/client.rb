@@ -77,9 +77,12 @@ module EchoCommon
           )
         end
 
-        def search(index:, **options)
+        def search(index:, suppress_shards_failures: false, **options)
           response = @client.search(index: with_prefix(index, allow_multi_index: true), **options)
-          raise IndexShardsError, response['_shards']['failures'] if response && response['_shards']['failures']
+
+          if !suppress_shards_failures && response && response['_shards']['failures']
+            raise IndexShardsError, response['_shards']['failures']
+          end
 
           symbolize(response)[:hits]
         end
