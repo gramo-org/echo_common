@@ -21,10 +21,11 @@ module EchoCommon
           #      "hits"=>[]
           #    }
           #  }
-          def search(query_body)
+          def search(query_body, **args)
             result = @client.search(
               index: @query_index,
-              body: query_body
+              body: query_body,
+              **args
             )
 
             result[:hits].map! do |hit|

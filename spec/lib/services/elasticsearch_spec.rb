@@ -124,6 +124,15 @@ describe EchoCommon::Services::Elasticsearch do
         ]
       )
     end
+
+    it 'forwards args to client' do
+      expect(client)
+        .to receive(:search)
+        .with(hash_including(suppress_shards_failures: true))
+        .and_return(hits: [])
+
+      subject.search 'query', suppress_shards_failures: true
+    end
   end
 
   describe "#bulk" do
@@ -175,5 +184,4 @@ describe EchoCommon::Services::Elasticsearch do
       expect { subject.bulk double }.to_not raise_error
     end
   end
-
 end
