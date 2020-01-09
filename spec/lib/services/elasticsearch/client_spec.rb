@@ -156,8 +156,9 @@ describe EchoCommon::Services::Elasticsearch::Client do
       client.search(index: "foo*,-foo5", type: nil, body: "fizz")
     end
 
-    it 'raising the error when shards failures are found' do
-      allow(elasticsearch_client).to receive(:search).with(
+    describe 'IndexShardsError' do
+      before do
+        allow(elasticsearch_client).to receive(:search).with(
         index: 'testing_some_alias',
         type: nil,
         body: 'fizz'
@@ -170,9 +171,17 @@ describe EchoCommon::Services::Elasticsearch::Client do
           }
         }
       )
+      end
 
-      expect { client.search(index: "some_alias", type: nil, body: "fizz") }
-        .to raise_error(an_instance_of(EchoCommon::Services::Elasticsearch::Client::IndexShardsError))
+      it 'raising the error when shards failures are found' do
+        expect { client.search(index: "some_alias", type: nil, body: "fizz") }
+          .to raise_error EchoCommon::Services::Elasticsearch::Client::IndexShardsError
+      end
+
+      it 'can suppress shards error' do
+        expect { client.search(suppress_shards_failures: true, index: "some_alias", type: nil, body: "fizz") }
+          .to_not raise_error
+      end
     end
   end
 
