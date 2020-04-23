@@ -88,7 +88,7 @@ module EchoCommon
         end
 
         def suggest(index:, **options)
-          symbolize @client.suggest(
+          symbolize @client.search(
             index: with_prefix(index),
             **options
           )
