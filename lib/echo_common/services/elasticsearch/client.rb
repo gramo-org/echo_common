@@ -88,7 +88,7 @@ module EchoCommon
         end
 
         def suggest(index:, **options)
-          options[:body] = [suggest: options[:body]] unless options[:body][:suggest]
+          options[:body] = {suggest: options[:body]} unless options[:body][:suggest]
           symbolize @client.search(
             index: with_prefix(index),
             **options
