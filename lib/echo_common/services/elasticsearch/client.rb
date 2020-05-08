@@ -88,10 +88,19 @@ module EchoCommon
         end
 
         def suggest(index:, **options)
-          symbolize @client.suggest(
-            index: with_prefix(index),
-            **options
-          )
+          if options[:body][:suggest]
+            symbolize @client.search(
+              index: with_prefix(index),
+              **options
+            )
+          else 
+            options[:body] = {suggest: options[:body]}
+            response = symbolize @client.search(
+              index: with_prefix(index),
+              **options
+            )
+            response.merge(response[:suggest]) if response[:suggest]
+          end
         end
 
         def create_index(index)
