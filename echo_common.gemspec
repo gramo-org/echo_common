@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "hanami-model", "~> 0.6.1"
-  spec.add_dependency "hanami-utils", "~> 0.8.0"
+  spec.add_dependency "hanami-utils", ">= 0.8", "< 1.4"
   spec.add_dependency "jwt", "~> 2"
   spec.add_dependency "elasticsearch", ">= 5.0.3", "< 7.9.0"
   spec.add_dependency "typhoeus", ">= 1.1.2", "< 1.4.0"
