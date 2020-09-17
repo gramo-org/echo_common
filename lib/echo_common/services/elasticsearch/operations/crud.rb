@@ -81,9 +81,9 @@ module EchoCommon
           #     "_version" : 1,
           #     "created" : true
           #   }
-          def index(id: nil, **doc)
+          def index(doc)
             @client.index(
-              index: @index, type: @type, id: id,
+              index: @index, type: @type, id: doc[:id],
               body: doc
             )
           end
