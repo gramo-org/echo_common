@@ -27,8 +27,8 @@ describe EchoCommon::Services::Elasticsearch do
       subject.index id: 'my-id', some: :data
     end
 
-    it 'does not pass id within body / document data to be indexed' do
-      expect(client).to receive(:index).with(hash_including(body: { some: :data }))
+    it 'does pass id within body / document data to be indexed' do
+      expect(client).to receive(:index).with(hash_including(body: { id: 'my-id', some: :data }))
       subject.index id: 'my-id', some: :data
     end
 
