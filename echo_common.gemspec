@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hanami-model", "~> 0.6.1"
   spec.add_dependency "hanami-utils", "~> 0.8.0"
   spec.add_dependency "jwt", "~> 2"
-  spec.add_dependency "elasticsearch", ">= 5.0.3", "< 7.9.0"
+  spec.add_dependency "elasticsearch", ">= 5.0.3", "< 7.11.0"
   spec.add_dependency "typhoeus", ">= 1.1.2", "< 1.4.0"
   spec.add_dependency "database_cleaner", ">= 1.5.1", "< 1.9.0"
   spec.add_dependency "rack-test", ">= 0.6.3", "< 1.2.0"
