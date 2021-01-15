@@ -10,12 +10,13 @@ module EchoCommon
         def self.included(base)
           base.class_eval do
             around(:each) do |example|
-              if example.metadata[:omit_database_transaction]
+              DatabaseCleaner.strategy = if example.metadata[:omit_database_transaction]
+                                           :truncation
+                                         else
+                                           :transaction
+                                         end
+              DatabaseCleaner.cleaning do
                 example.run
-              else
-                DatabaseCleaner.cleaning do
-                  example.run
-                end
               end
             end
           end
