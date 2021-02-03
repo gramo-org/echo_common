@@ -1,6 +1,7 @@
 # coding: utf-8
 module EchoCommon
   class RecordingDraft < EchoCommon::Entity
+    attributes :external_foreign_key
     attributes :title, :isrc, :duration_in_seconds
     attributes :recording_date, :release_date, :performer_note, :label_name,
                :p_line, :recorded_in
