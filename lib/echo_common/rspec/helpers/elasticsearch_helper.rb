@@ -137,15 +137,11 @@ module EchoCommon
             end
           end
 
-          # placeholder hook, overridden in echo
-          def setup_query_alias; end
-
           def setup_and_refresh_indices
             EchoCommon::Services::Elasticsearch.delete_all_indices
             EchoCommon::Services::Elasticsearch.client.refresh_indices
 
             EchoCommon::Services::Elasticsearch.create_all_indices
-            setup_query_alias
             EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
 
@@ -157,7 +153,6 @@ module EchoCommon
               EchoCommon::Services::Elasticsearch.delete_index(index)
               EchoCommon::Services::Elasticsearch.create_index(index)
             end
-            setup_query_alias
             EchoCommon::Services::Elasticsearch.client.refresh_indices
           end
         end
