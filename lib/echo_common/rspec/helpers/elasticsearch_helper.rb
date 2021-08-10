@@ -81,7 +81,7 @@ module EchoCommon
 
             @target.send(method, *args, &block).tap do |result|
               is_dirty = [:index, :update, :delete, :bulk].include? method
-              @@dirty_indices << args[0][:index] if is_dirty
+              @@dirty_indices << remove_prefix(args[0][:index]) if is_dirty
 
               result
             end
@@ -96,6 +96,11 @@ module EchoCommon
               If the method requires a forced refresh before invoking (e.g. :search and :suggest)
               then you need to register it in `METHODS_THAT_REQUIRE_REFRESH` as well
             )
+          end
+
+          def remove_prefix(index_name)
+            prefix = Echo.config[:elasticsearch_index_prefix]
+            index_name.delete_prefix(prefix)
           end
         end
 
