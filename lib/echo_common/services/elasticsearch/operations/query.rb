@@ -36,6 +36,12 @@ module EchoCommon
             result
           end
 
+          # A version of search that is more true to the interface of
+          # the real Elasticsearch client.
+          def not_so_stupid_search(**args)
+            @client.search(index: @query_index, **args)
+          end
+
           # Wraps elasticsearch client 'suggest' method and returns the response from the client
           #
           # Example of usage:

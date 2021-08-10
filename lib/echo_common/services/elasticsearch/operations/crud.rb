@@ -98,6 +98,12 @@ module EchoCommon
             )
           end
 
+          # A version of update that is more true to the interface of
+          # the real Elasticsearch client.
+          def not_so_stupid_update(args)
+            @client.update(index: @index, type: @type, **args)
+          end
+
           # Wraps elasticsearch client 'delete' method and returns the result
           def delete(id)
             @client.delete(
