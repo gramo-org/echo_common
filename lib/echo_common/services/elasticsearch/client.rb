@@ -158,6 +158,13 @@ module EchoCommon
           )
         end
 
+        def delete_by_query(index:, **options)
+          symbolize @client.delete_by_query(
+            index: with_prefix(index),
+            **options
+          )
+        end
+
         def list_tasks(**options)
           symbolize @client.tasks.list(**options)
         end
