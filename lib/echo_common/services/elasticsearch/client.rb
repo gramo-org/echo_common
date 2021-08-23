@@ -105,7 +105,7 @@ module EchoCommon
 
         def create_index(index)
           json_file_name = mapping_file_name index
-          create_all_indices(filter: -> (f) { f.end_with? json_file_name })
+          create_all_indices(filter: -> (f) { f.split('/').last == json_file_name })
         end
 
         def create_all_indices(filter: -> (f) { true })
