@@ -98,6 +98,18 @@ module EchoCommon
             )
           end
 
+           # Wraps elasticsearch client 'update' method but as an upsert
+          def upsert(id:, refresh: false, **doc)
+            @client.update(
+              index: @index, type: @type, id: id,
+              body: {
+                doc: doc,
+                doc_as_upsert: true
+              },
+              refresh: refresh
+            )
+          end
+
           # Wraps elasticsearch client 'delete' method and returns the result
           def delete(id)
             @client.delete(
