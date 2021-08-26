@@ -8,12 +8,18 @@ module EchoCommon
         class BlockingProxyClient
           KNOWN_CLIENT_METHODS = [
             :get, :mget, :index, :update, :delete, :bulk, :search, :suggest,
+            :update_by_query, :delete_by_query,
             :create_index, :create_all_indices, :delete_index,
             :delete_all_indices, :refresh_indices, :put_alias
           ].freeze
 
           METHODS_THAT_REQUIRE_REFRESH = [
             :search, :suggest
+          ].freeze
+
+          METHODS_THAT_MAKE_DIRTY_INDEXES = [
+            :index, :update, :delete, :bulk,
+            :update_by_query, :delete_by_query
           ].freeze
 
           @@route = false
@@ -80,7 +86,7 @@ module EchoCommon
             force_refresh_indices if METHODS_THAT_REQUIRE_REFRESH.include? method
 
             @target.send(method, *args, &block).tap do |result|
-              is_dirty = [:index, :update, :delete, :bulk].include? method
+              is_dirty = METHODS_THAT_MAKE_DIRTY_INDEXES.include? method
               @@dirty_indices << remove_prefix(args[0][:index]) if is_dirty
 
               result
