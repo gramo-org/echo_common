@@ -7,8 +7,4 @@ updates:
     time: "04:00"
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: elasticsearch
-    versions:
-    - 7.10.0
-    - 7.11.0
   rebase-strategy: disabled
