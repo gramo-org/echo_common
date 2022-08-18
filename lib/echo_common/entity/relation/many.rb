@@ -18,10 +18,9 @@ module EchoCommon
         def_delegators :@collection,
           :delete,
           :each, :each_with_index, :map,
-          :length, :first, :last, :[],
+          :length, :first,
           :any?, :empty?, :include?,
-          :==, :equal?, :eql?, :eq?, :hash
-
+          :==, :equal?, :eql?, :hash
 
         class AlreadyAddedError < EchoCommon::Error
           attr_reader :object, :relation
@@ -34,14 +33,14 @@ module EchoCommon
           end
         end
 
-        def initialize(owner, collection = [])
+        def initialize(owner, collection = Set.new)
           @owner = owner
           @collection = collection
         end
 
         def push(object)
           raise AlreadyAddedError.new(object, self) if @collection.include? object
-          @collection.push object
+          @collection.add object
         end
         alias_method :<<, :push
 
@@ -51,6 +50,13 @@ module EchoCommon
         end
         alias_method :to_s, :inspect
 
+        def [](*args)
+          @collection.to_a[*args]
+        end
+
+        def last(*args)
+          @collection.to_a.last(*args)
+        end
 
         private
 

@@ -19,7 +19,7 @@ module EchoCommon
       subject << obj
 
       expect(subject).to_not be_empty
-      expect(subject).to eq [obj]
+      expect(subject.first).to eq obj
     end
 
     it "raises error when adding duplicates" do
@@ -29,6 +29,20 @@ module EchoCommon
       expect {
         subject << obj
       }.to raise_error Entity::Relation::Many::AlreadyAddedError
+    end
+
+    it "can fetch object by index" do
+      obj = "obj"
+      subject << obj
+
+      expect(subject[0]).to eq obj
+    end
+
+    it "can fetch the last object" do
+      obj = "obj"
+      subject << obj
+
+      expect(subject.last).to eq obj
     end
   end
 end
