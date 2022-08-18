@@ -41,9 +41,10 @@ module EchoCommon
         def push(object)
           raise AlreadyAddedError.new(object, self) if @collection.include? object
           @collection.add object
+
+          self
         end
         alias_method :<<, :push
-
 
         def inspect
           "<#{self.class.name} owner: #{@owner.class.name}, length: #{length}>"
