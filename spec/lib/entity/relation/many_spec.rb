@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'echo_common/entity'
 require 'echo_common/entity/relation/many'
 
 
@@ -28,6 +29,18 @@ module EchoCommon
 
       expect {
         subject << obj
+      }.to raise_error Entity::Relation::Many::AlreadyAddedError
+    end
+
+    it "raises error when adding duplicate Entity object that is a different instance but the same class and ID" do
+      class TestObj < Entity
+      end
+
+      obj = TestObj.new(id: 2)
+      subject << obj
+
+      expect {
+        subject << TestObj.new(id: 2)
       }.to raise_error Entity::Relation::Many::AlreadyAddedError
     end
 
