@@ -17,8 +17,10 @@ module EchoCommon
 
     it "can add objects" do
       obj = "obj"
-      subject << obj
+      result = subject << obj
 
+      expect(result.class).to eq subject.class
+      expect(result.object_id).to eq subject.object_id
       expect(subject).to_not be_empty
       expect(subject.first).to eq obj
     end
