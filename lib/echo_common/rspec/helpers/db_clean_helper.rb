@@ -1,5 +1,10 @@
 require 'database_cleaner'
 
+# Make sure we run DatabaseCleaner only on test database
+unless Echo.config[:sequel_adapter].url.include?('_test')
+  raise "It's not a local DB!"
+end
+
 DatabaseCleaner.clean_with :truncation
 DatabaseCleaner.strategy = :transaction
 
@@ -15,6 +20,7 @@ module EchoCommon
                                          else
                                            :transaction
                                          end
+
               DatabaseCleaner.cleaning do
                 example.run
               end
