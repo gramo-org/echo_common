@@ -1,6 +1,6 @@
 require 'echo_common/error'
-require 'echo_common/logger/formatter'
-require 'hanami/logger'
+#require 'echo_common/logger/formatter'
+#require 'hanami/logger'
 
 module EchoCommon
   # Echo Configuration
@@ -59,19 +59,19 @@ module EchoCommon
     #
     #   tag     -  The tag name you want logged lines to be tagged with
     #   level   -  The log level for this logger, defaults to this config
-    def logger(tag: nil, level: self[:log_level], formatter: self[:log_formatter])
-      $test_logg ||= StringIO.new
-      stream = ENV['HANAMI_ENV'] == 'test' ? $test_logg : STDOUT
-      ::Hanami::Logger.new(tag, stream: stream).tap do |logger|
-        logger.level = ::Logger.const_get level
-        logger.formatter = formatter
-        logger.formatter.application_name = logger.application_name
-      end
-    rescue NameError
-      raise LogLevelNameError,
-        "Log level '#{self[:log_level]}' does not exist. " +
-        "Please ensure config 'LOG_LEVEL' is set correctly."
-    end
+    # def logger(tag: nil, level: self[:log_level], formatter: self[:log_formatter])
+    #   $test_logg ||= StringIO.new
+    #   stream = ENV['HANAMI_ENV'] == 'test' ? $test_logg : STDOUT
+    #   ::Hanami::Logger.new(tag, stream: stream).tap do |logger|
+    #     logger.level = ::Logger.const_get level
+    #     logger.formatter = formatter
+    #     logger.formatter.application_name = logger.application_name
+    #   end
+    # rescue NameError
+    #   raise LogLevelNameError,
+    #     "Log level '#{self[:log_level]}' does not exist. " +
+    #     "Please ensure config 'LOG_LEVEL' is set correctly."
+    # end
 
 
 
