@@ -33,7 +33,7 @@ module EchoCommon
       #                   be merged with exp.
       #   config        - A configuration object where jwt_alg, jwt_key and jwt_key_pub are found.
       def self.create_session_token(user:, exp: nil, data: {}, claims: {}, config: default_config)
-        data = ::Hanami::Utils::Hash.new(data).symbolize!
+        data = ::Hanami::Utils::Hash.symbolize(data)
 
         exp ||= payload[:exp]
         fail ArgumentError, "Missing exp" if exp.nil?

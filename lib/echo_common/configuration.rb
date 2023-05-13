@@ -1,6 +1,5 @@
 require 'echo_common/error'
-#require 'echo_common/logger/formatter'
-#require 'hanami/logger'
+require 'logger'
 
 module EchoCommon
   # Echo Configuration
@@ -55,26 +54,22 @@ module EchoCommon
       @env.key? key.to_s.upcase
     end
 
-    # Returns a new Logger, with given tag and level.
-    #
-    #   tag     -  The tag name you want logged lines to be tagged with
-    #   level   -  The log level for this logger, defaults to this config
-    # def logger(tag: nil, level: self[:log_level], formatter: self[:log_formatter])
-    #   $test_logg ||= StringIO.new
-    #   stream = ENV['HANAMI_ENV'] == 'test' ? $test_logg : STDOUT
-    #   ::Hanami::Logger.new(tag, stream: stream).tap do |logger|
-    #     logger.level = ::Logger.const_get level
-    #     logger.formatter = formatter
-    #     logger.formatter.application_name = logger.application_name
-    #   end
-    # rescue NameError
-    #   raise LogLevelNameError,
-    #     "Log level '#{self[:log_level]}' does not exist. " +
-    #     "Please ensure config 'LOG_LEVEL' is set correctly."
-    # end
+    def logger(tag: nil, level: self[:log_level])
+      $test_logg ||= StringIO.new # rubocop:disable Style/GlobalVars
 
+      logger = if ENV['HANAMI_ENV'] == 'test'
+                 ::Logger.new($test_logg, level: level, progname: tag) # rubocop:disable Style/GlobalVars
+               else
+                 ::Logger.new(STDOUT, level: level, progname: tag)
+               end
+      logger.formatter = log_formatter
 
-
+      logger
+    rescue ArgumentError
+      raise LogLevelNameError,
+            "Log level '#{self[:log_level]}' does not exist. " \
+            "Please ensure config 'LOG_LEVEL' is set correctly."
+    end
 
     private
 
@@ -83,7 +78,14 @@ module EchoCommon
     end
 
     def log_formatter
-      EchoCommon::Logger::Formatter.new
+      proc do |severity, datetime, progname, msg|
+        request_id = Thread.current[:echo_request_id]
+        formatter = ["app=#{progname}", "severity=#{severity}", "time=#{datetime.utc}"]
+        formatter << "request_id=#{request_id}" if request_id
+        formatter << "message=#{msg}"
+
+        formatter.join(' ')
+      end
     end
 
     # Fetches given key
