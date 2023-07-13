@@ -69,26 +69,6 @@ describe "Echo configuration" do
 
       Thread.current[:echo_request_id] = nil
     end
-
-    it "can be used with JSON log formatter" do
-      formatter = Hanami::Logger::JSONFormatter.new
-      formatter.extend EchoCommon::Logger::FormatterWithRequestId
-
-      output = stub_stdout_constant do
-        logger = subject.logger formatter: formatter
-        Thread.current[:echo_request_id] = "1234"
-        logger.info "hello"
-      end
-
-      json_logged_data = JSON.parse output
-      
-      expect(json_logged_data['app']).to eq 'Hanami'
-      expect(json_logged_data['severity']).to eq 'INFO'
-      expect(json_logged_data['request_id']).to eq '1234'
-      expect(json_logged_data['message']).to eq 'hello'
-
-      Thread.current[:echo_request_id] = nil
-    end
   end
   
   describe "#key?" do

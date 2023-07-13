@@ -10,20 +10,18 @@ module EchoCommon
       # @see EchoCommon::Hanami::Controllers::Authentication
       #
       module Jwt
-        def jwt
-          @jwt ||= begin
-            header = params.env['HTTP_AUTHORIZATION']
-            token = params.raw[:token] || params.raw['token']
+        def jwt(request)
+          header = request.params.env['HTTP_AUTHORIZATION']
+          token = request.params.raw[:token] || request.params.raw['token']
 
-            jwt = if header
-              EchoCommon::Services::Jwt.from_http_header header
-            elsif token
-              EchoCommon::Services::Jwt.decode token
-            end
-
-            raise JWT::ExpiredSignature if jwt.nil?
-            jwt
+          jwt = if header
+            EchoCommon::Services::Jwt.from_http_header header
+          elsif token
+            EchoCommon::Services::Jwt.decode token
           end
+
+        raise JWT::ExpiredSignature if jwt.nil?
+          jwt
         end
 
         def encode_as_jwt(payload)

@@ -5,7 +5,6 @@ require 'echo_common/error'
 # After migration is done we are going to replace Hanami::Entity with ValueObject but for now
 # we going to keep current behaviour.
 require 'hanami/utils/kernel'
-require 'hanami/utils/attributes'
 
 module Hanami
   module Entity

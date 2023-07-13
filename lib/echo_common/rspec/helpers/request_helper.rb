@@ -2,10 +2,6 @@ require 'rack/test'
 require 'database_cleaner'
 require 'echo_common/rspec/helpers/db_clean_helper'
 
-unless defined? ::Hanami::Container
-  fail EchoCommon::Error, "Didn't find Hanami::Container"
-end
-
 module EchoCommon
   module RSpec
     module Helpers
@@ -19,13 +15,11 @@ module EchoCommon
             include Rack::Test::Methods
             include EchoCommon::RSpec::Helpers::DbCleanHelper
 
-            let :app do
-              ::Hanami::Container.new
+            let(:app) do
+              ::Hanami.app
             end
           end
         end
-
-
 
         def last_response_json
           JSON.parse last_response.body
@@ -61,7 +55,6 @@ module EchoCommon
           delete url, {}, rack_env
         end
 
-
         private
 
         def _to_json_unless_already_string(body)
@@ -72,9 +65,6 @@ module EchoCommon
           end
         end
       end
-
-
-
     end
   end
 end

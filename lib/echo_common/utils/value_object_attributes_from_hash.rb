@@ -1,5 +1,3 @@
-require 'echo_common/utils/hash'
-
 module EchoCommon
   module Utils
     # Adds simple DSL for define a value object with values backed by a single hash
@@ -48,8 +46,7 @@ module EchoCommon
       end
 
       def initialize(attributes)
-        @attributes = ::EchoCommon::Utils::Hash.new(attributes)
-        @attributes.stringify!
+        @attributes = ::Hanami::Utils::Hash.deep_stringify(attributes)
         @attributes.freeze
       end
 

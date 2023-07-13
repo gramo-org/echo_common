@@ -1,4 +1,4 @@
-FROM ruby:2.6.5-stretch
+FROM ruby:3.1.2-bullseye
 
 ### DEPENDENCIES ###
 
